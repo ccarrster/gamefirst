@@ -57,4 +57,31 @@ class Game{
 		}
 		return false;
 	}
+
+	public function setupWarriors(){
+		if(count($this->players) == 2){
+			foreach($this->players as $player){
+				$warriors = [11, 2, 1, 1, 1];
+				$player->setWarriors($warriors);
+			}
+			return true;
+		} elseif(count($this->players) == 3){
+			foreach($this->players as $player){
+				$warriors = [7, 2, 1, 1, 0];
+				$player->setWarriors($warriors);
+			}
+			return true;
+		} elseif(count($this->players) == 4){
+			foreach($this->players as $player){
+				$warriors = [5, 1, 1, 1, 0];
+				$player->setWarriors($warriors);
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public function getWarriors($playerKey){
+		return $this->players[$playerKey]->getWarriors();
+	}
 }

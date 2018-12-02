@@ -194,5 +194,59 @@ class JimmyTest extends TestCase
         $keyA = $game->addPlayer($playerA);
         $this->assertFalse($game->chooseFaction($keyA, "Mage"));
     }
+    public function testWarriorsTwoPlayers(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $game->setupWarriors();
+        $this->assertEquals(11, $game->getWarriors($key)[0]);
+        $this->assertEquals(2, $game->getWarriors($key)[1]);
+        $this->assertEquals(1, $game->getWarriors($key)[2]);
+        $this->assertEquals(1, $game->getWarriors($key)[3]);
+        $this->assertEquals(1, $game->getWarriors($key)[4]);
+    }
+    public function testWarriorsThreePlayers(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $game->setupWarriors();
+        $this->assertEquals(7, $game->getWarriors($keyB)[0]);
+        $this->assertEquals(2, $game->getWarriors($keyB)[1]);
+        $this->assertEquals(1, $game->getWarriors($keyB)[2]);
+        $this->assertEquals(1, $game->getWarriors($keyB)[3]);
+        $this->assertEquals(0, $game->getWarriors($keyB)[4]);
+    }
+    public function testWarriorsFourPlayers(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $this->assertEquals(5, $game->getWarriors($keyB)[0]);
+        $this->assertEquals(1, $game->getWarriors($keyB)[1]);
+        $this->assertEquals(1, $game->getWarriors($keyB)[2]);
+        $this->assertEquals(1, $game->getWarriors($keyB)[3]);
+        $this->assertEquals(0, $game->getWarriors($keyB)[4]);
+    }
 }
 ?>
