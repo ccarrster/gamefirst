@@ -248,5 +248,22 @@ class JimmyTest extends TestCase
         $this->assertEquals(1, $game->getWarriors($keyB)[3]);
         $this->assertEquals(0, $game->getWarriors($keyB)[4]);
     }
+    public function testGoldDistribution(){
+        $board = new Board();
+        $goldAmount = 0;
+        $goldAmount += $board->getCell(3, 0)->getGold();
+        $goldAmount += $board->getCell(1, 1)->getGold();
+        $goldAmount += $board->getCell(5, 1)->getGold();
+        $goldAmount += $board->getCell(7, 1)->getGold();
+        $goldAmount += $board->getCell(0, 3)->getGold();
+        $goldAmount += $board->getCell(4, 3)->getGold();
+        $goldAmount += $board->getCell(2, 4)->getGold();
+        $goldAmount += $board->getCell(6, 4)->getGold();
+        $this->assertEquals(40, $goldAmount);
+    }
+    public function testGetPalisadeCount(){
+        $game = new Game();
+        $this->assertEquals(35, $game->getPalisadeCount());
+    }
 }
 ?>

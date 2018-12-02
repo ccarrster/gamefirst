@@ -13,6 +13,8 @@ class Board{
 			}
 			$this->cells[] = $column;
 		}
+		$gold = [3, 4, 4, 5, 5, 6, 6, 7];
+		shuffle($gold);
 		$this->cells[3][0]->canHaveGold();
 		$this->cells[1][1]->canHaveGold();
 		$this->cells[5][1]->canHaveGold();
@@ -21,6 +23,15 @@ class Board{
 		$this->cells[4][3]->canHaveGold();
 		$this->cells[2][4]->canHaveGold();
 		$this->cells[6][4]->canHaveGold();
+
+		$this->cells[3][0]->setGold(array_pop($gold));
+		$this->cells[1][1]->setGold(array_pop($gold));
+		$this->cells[5][1]->setGold(array_pop($gold));
+		$this->cells[7][1]->setGold(array_pop($gold));
+		$this->cells[0][3]->setGold(array_pop($gold));
+		$this->cells[4][3]->setGold(array_pop($gold));
+		$this->cells[2][4]->setGold(array_pop($gold));
+		$this->cells[6][4]->setGold(array_pop($gold));
 	}
 
 	public function getCell($x, $y){

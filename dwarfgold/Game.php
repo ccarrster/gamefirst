@@ -7,6 +7,7 @@ class Game{
 	var $factions = [];
 	var $availableFactions = [];
 	var $players = [];
+	var $palisades;
 
 	public function __construct(){
 		$this->board = new Board();
@@ -17,6 +18,7 @@ class Game{
 		foreach($this->factions as $faction){
 			$this->availableFactions[] = $faction;
 		}
+		$this->palisades = 35;
 	}
 
 	public function getBoard(){
@@ -83,5 +85,8 @@ class Game{
 	}
 	public function getWarriors($playerKey){
 		return $this->players[$playerKey]->getWarriors();
+	}
+	public function getPalisadeCount(){
+		return $this->palisades;
 	}
 }
