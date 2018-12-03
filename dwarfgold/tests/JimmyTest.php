@@ -418,5 +418,161 @@ class JimmyTest extends TestCase
         $game->setupAdvancedTokens();
         $this->assertEquals(1, $player->getReinforcments());
     }
+    public function testPlayerOrder(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $this->assertTrue($currentPlayer == $player || $currentPlayer == $playerA || $currentPlayer == $playerB || $currentPlayer == $playerC);
+    }
+    public function testPlayerOrderNext(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $game->nextPlayer();
+        $currentPlayer2 = $game->getCurrentPlayer();
+        $this->assertNotEquals($currentPlayer, $currentPlayer2);
+    }
+    public function testPlayerOrderNextLoop(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $game->nextPlayer();
+        $game->nextPlayer();
+        $game->nextPlayer();
+        $game->nextPlayer();
+        $currentPlayer2 = $game->getCurrentPlayer();
+        $this->assertEquals($currentPlayer, $currentPlayer2);
+    }
+    public function testPlaceWarrior(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $faction = $currentPlayer->getFaction();
+        $this->assertEquals(5, $currentPlayer->getWarriors()[0]);
+        $this->assertTrue($game->placeWarrior($currentPlayer->getFaction(), 1, 0, 0));
+        $this->assertEquals(4, $currentPlayer->getWarriors()[0]);
+        $cell = $game->getBoard()->getCell(0, 0);
+        $this->assertEquals(1, $cell->getValue());
+        $this->assertEquals($faction, $cell->getFaction());
+    }
+    public function testPlaceWarriorTwice(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $faction = $currentPlayer->getFaction();
+        $game->placeWarrior($currentPlayer->getFaction(), 1, 0, 0);
+        $this->assertFalse($game->placeWarrior($currentPlayer->getFaction(), 1, 0, 0));
+    }
+    public function testPlaceWarriorEmpty(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $faction = $currentPlayer->getFaction();
+        $this->assertEquals(0, $currentPlayer->getWarriors()[4]);
+        $this->assertFalse($game->placeWarrior($currentPlayer->getFaction(), 5, 0, 0));
+    }
+    public function testPlaceWarriorValue(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $faction = $currentPlayer->getFaction();
+        $this->assertEquals(1, $currentPlayer->getWarriors()[3]);
+        $this->assertTrue($game->placeWarrior($currentPlayer->getFaction(), 4, 0, 0));
+        $this->assertEquals(0, $currentPlayer->getWarriors()[3]);
+        $cell = $game->getBoard()->getCell(0, 0);
+        $this->assertEquals(4, $cell->getValue());
+        $this->assertEquals($faction, $cell->getFaction());
+    }
 }
 ?>

@@ -32,7 +32,7 @@ class Player{
 	public function setReinforcements($reinforcements){
 		$this->reinforcements = $reinforcements;
 	}
-	//4 player game
-	//Teams
-	//Turn order
+	public function removeWarrior($value){
+		$this->warriors[$value] -= 1;
+	}
 }

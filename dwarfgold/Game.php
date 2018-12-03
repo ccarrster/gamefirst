@@ -10,6 +10,9 @@ class Game{
 	var $palisades;
 	var $canPeek = false;
 	var $advancedMode = false;
+	var $started = false;
+	var $playerOrder = [];
+	var $currentPlayerKey = 0;
 
 	public function __construct(){
 		$this->board = new Board();
@@ -118,6 +121,46 @@ class Game{
 				}
 				$player->setReinforcements(1);
 			}
+		}
+	}
+	public function start(){
+		$this->started = true;
+		foreach($this->players as $player){
+			$this->playerOrder[] = $player;
+		}
+		shuffle($this->playerOrder);
+	}
+	public function getCurrentPlayer(){
+		return $this->playerOrder[$this->currentPlayerKey];
+	}
+	public function nextPlayer(){
+		if($this->currentPlayerKey == (count($this->playerOrder) - 1)){
+			$this->currentPlayerKey = 0;
+		} else {
+			$this->currentPlayerKey += 1;
+		}
+	}
+	public function getPlayerForFaction($faction){
+		foreach($this->players as $player){
+			if($player->getFaction() == $faction){
+				return $player;
+			}
+		}
+	}
+	public function placeWarrior($faction, $value, $x, $y){
+		$player = $this->getPlayerForFaction($faction);
+		if($player->getWarriors()[$value - 1] > 0){
+			$cell = $this->board->getCell($x, $y);
+			if($cell->isEmpty()){
+				$cell->setFaction($faction);
+				$cell->setValue($value);
+				$player->removeWarrior($value - 1);
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
 		}
 	}
 }
