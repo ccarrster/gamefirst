@@ -8,6 +8,8 @@ class Game{
 	var $availableFactions = [];
 	var $players = [];
 	var $palisades;
+	var $canPeek = false;
+	var $advancedMode = false;
 
 	public function __construct(){
 		$this->board = new Board();
@@ -88,5 +90,34 @@ class Game{
 	}
 	public function getPalisadeCount(){
 		return $this->palisades;
+	}
+	public function getCanPeek(){
+		return $this->canPeek;
+	}
+	public function setCanPeek($peek){
+		$this->canPeek = $peek;
+	}
+	public function getAdvancedMode(){
+		return $this->advancedMode;
+	}
+	public function setAdvancedMode($mode){
+		$this->advancedMode = $mode;
+	}
+	public function setupAdvancedTokens(){
+		if($this->advancedMode === true){
+			foreach($this->players as $player){
+				$faction = $player->getFaction();
+				if($faction == "Mage"){
+					$player->setPowerTokens(2);
+				} elseif($faction == "Elf"){
+					$player->setPowerTokens(2);
+				} elseif($faction == "Orc"){
+					$player->setPowerTokens(1);
+				} elseif($faction == "Goblin"){
+					$player->setPowerTokens(1);
+				}
+				$player->setReinforcements(1);
+			}
+		}
 	}
 }

@@ -265,5 +265,158 @@ class JimmyTest extends TestCase
         $game = new Game();
         $this->assertEquals(35, $game->getPalisadeCount());
     }
+    public function testCellPalisadeSouth(){
+        $board = new Board();
+        $cell = $board->getCell(0, 0);
+        $this->assertFalse($cell->hasPalisade("south"));
+    }
+    public function testCellPalisadeEast(){
+        $board = new Board();
+        $cell = $board->getCell(0, 0);
+        $this->assertFalse($cell->hasPalisade("east"));
+    }
+    public function testCanPeek(){
+        $game = new Game();
+        $this->assertFalse($game->getCanPeek());
+    }
+    public function testCanPeekTrue(){
+        $game = new Game();
+        $game->setCanPeek(true);
+        $this->assertTrue($game->getCanPeek());
+    }
+    public function testAdvancedMode(){
+        $game = new Game();
+        $this->assertFalse($game->getAdvancedMode());
+    }
+    public function testSetAdvancedMode(){
+        $game = new Game();
+        $game->setAdvancedMode(true);
+        $this->assertTrue($game->getAdvancedMode());
+    }
+    public function testSetAdvancedTokens(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupAdvancedTokens();
+        $this->assertEquals(0, $player->getPowerTokens());
+    }
+
+    public function testSetAdvancedTokensMage(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setAdvancedMode(true);
+        $game->setupAdvancedTokens();
+        $this->assertEquals(2, $player->getPowerTokens());
+    }
+    public function testSetAdvancedTokensOrc(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setAdvancedMode(true);
+        $game->setupAdvancedTokens();
+        $this->assertEquals(1, $playerA->getPowerTokens());
+    }
+    public function testSetAdvancedTokensElf(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setAdvancedMode(true);
+        $game->setupAdvancedTokens();
+        $this->assertEquals(2, $playerB->getPowerTokens());
+    }
+    public function testSetAdvancedTokensGoblin(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setAdvancedMode(true);
+        $game->setupAdvancedTokens();
+        $this->assertEquals(1, $playerC->getPowerTokens());
+    }
+    public function testReinforcments(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupAdvancedTokens();
+        $this->assertEquals(0, $player->getReinforcments());
+    }
+    public function testReinforcmentsAdvanced(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setAdvancedMode(true);
+        $game->setupAdvancedTokens();
+        $this->assertEquals(1, $player->getReinforcments());
+    }
 }
 ?>
