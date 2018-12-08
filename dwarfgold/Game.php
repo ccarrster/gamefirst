@@ -1,6 +1,7 @@
 <?php
 namespace App;
 require_once('Board.php');
+require_once('Team.php');
 
 class Game{
 	var $board;
@@ -13,6 +14,7 @@ class Game{
 	var $started = false;
 	var $playerOrder = [];
 	var $currentPlayerKey = 0;
+	var $teams = [];
 
 	public function __construct(){
 		$this->board = new Board();
@@ -129,6 +131,23 @@ class Game{
 			$this->playerOrder[] = $player;
 		}
 		shuffle($this->playerOrder);
+		if(count($this->playerOrder) == 4){
+			$team = new Team();
+			$team->addFaction($this->playerOrder[0]->getFaction());
+			$team->addFaction($this->playerOrder[2]->getFaction());
+			$this->teams[] = $team;
+
+			$team2 = new Team();
+			$team2->addFaction($this->playerOrder[1]->getFaction());
+			$team2->addFaction($this->playerOrder[3]->getFaction());
+			$this->teams[] = $team2;
+		} else {
+			foreach($this->playerOrder as $player){
+				$team = new Team();
+				$team->addFaction($player->getFaction());
+				$this->teams[] = $team;
+			}
+		}
 	}
 	public function getCurrentPlayer(){
 		return $this->playerOrder[$this->currentPlayerKey];
@@ -165,5 +184,72 @@ class Game{
 	}
 	public function placePalisade($faction, $side, $x, $y){
 		return $this->board->placePalisade($faction, $side, $x, $y);
+	}
+	public function getTerritories(){
+		return $this->board->getTerritories();
+	}
+	public function getTerritoryGold($territory){
+		$gold = 0;
+		foreach($territory as $cell){
+			$gold += $this->board->getCell($cell[0], $cell[1])->getGold();
+		}
+		return $gold;
+	}
+	
+	public function getTerritoryWarriorSum($territory){
+		$results = [];
+		foreach($this->players as $player){
+			$results[$player->getFaction()] = 0;
+		}
+		foreach($territory as $cell){
+			$boardCell = $this->board->getCell($cell[0], $cell[1]);
+			$faction = $boardCell->getFaction();
+			$value = $boardCell->getValue();
+			if($faction !== null){
+				$results[$faction] += $value;
+			}
+		}
+		return $results;
+	}
+	public function splitGold(){
+		$territories = $this->getTerritories();
+		foreach($territories as $territory){
+			$factionValue = $this->getTerritoryWarriorSum($territory);
+			$teamValues = [];
+			foreach($factionValue as $faction=>$value){
+				foreach($this->teams as $team){
+					if($team->hasFaction($faction)){
+						if(!isset($teamValues[$team->getTeamString()])){
+							$teamValues[$team->getTeamString()] = 0;
+						}
+						$teamValues[$team->getTeamString()] += $value;
+					}
+				}
+			}
+			$maxValue = 0;
+			$maxTeams = [];
+			foreach($teamValues as $teamString=>$value){
+				if($value > $maxValue){
+					$maxValue = $value;
+					$maxTeams = [];
+					$maxTeams[] = $teamString;
+				} elseif($value == $maxValue){
+					$maxTeams[] = $teamString;
+				}
+			}
+			$gold = $this->getTerritoryGold($territory);
+			$splitGold = floor($gold/count($maxTeams));
+			foreach($maxTeams as $teamString){
+				foreach($this->teams as $team){
+					if($teamString === $team->getTeamString()){
+						$team->addGoldPile($splitGold);
+					}
+				}
+			}
+		}
+	}
+
+	public function getTeams(){
+		return $this->teams;
 	}
 }

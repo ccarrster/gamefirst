@@ -118,4 +118,66 @@ class Board{
 			}
 		}
 	}
+
+	public function getTerritories(){
+		$territories = [];
+		for($x1 = 0; $x1 < 8; $x1++){
+			for($y1 = 0; $y1 < 5; $y1++){
+				$this->cells[$x1][$y1]->visited = false;
+			}
+		}
+		for($x = 0; $x < 8; $x++){
+			for($y = 0; $y < 5; $y++){
+				if($this->cells[$x][$y]->visited === false){
+					$teritoryCells = [];
+					$this->recGetTerritories($x, $y, $teritoryCells);
+					$territories[] = $teritoryCells;
+				}
+			}
+		}
+		for($x1 = 0; $x1 < 8; $x1++){
+			for($y1 = 0; $y1 < 5; $y1++){
+				$this->cells[$x1][$y1]->visited = false;
+			}
+		}
+		return $territories;
+	}
+
+	public function recGetTerritories($x, $y, &$teritoryCells){
+		$cell = $this->cells[$x][$y];
+		$cell->visited = true;
+		$teritoryCells[] = [$x, $y];
+		//X+
+		if($x < 7){
+			if($cell->hasPalisade('east') === false){
+				if($this->cells[$x + 1][$y]->visited === false){
+					$this->recGetTerritories($x + 1, $y, $teritoryCells);
+				}
+			}
+		}
+		//X-
+		if($x > 0){
+			if($this->cells[$x - 1][$y]->visited === false){
+				if($this->cells[$x - 1][$y]->hasPalisade('east') === false){
+					$this->recGetTerritories($x - 1, $y, $teritoryCells);
+				}
+			}
+		}
+		//Y+
+		if($y < 4){
+			if($this->cells[$x][$y + 1]->visited === false){
+				if($cell->hasPalisade('south') === false){
+					$this->recGetTerritories($x, $y + 1, $teritoryCells);
+				}
+			}
+		}
+		//Y-
+		if($y > 0){
+			if($this->cells[$x][$y - 1]->visited === false){
+				if($this->cells[$x][$y - 1]->hasPalisade('south') === false){
+					$this->recGetTerritories($x, $y - 1, $teritoryCells);
+				}
+			}
+		}
+	}
 }

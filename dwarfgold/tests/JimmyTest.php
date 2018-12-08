@@ -782,10 +782,262 @@ class JimmyTest extends TestCase
         $game->start();
         $currentPlayer = $game->getCurrentPlayer();
         $faction = $currentPlayer->getFaction();
-        $this->assertTrue($game->placePalisade($faction, "south", 5, 2));
         $this->assertTrue($game->placePalisade($faction, "south", 6, 2));
-        $this->assertTrue($game->placePalisade($faction, "east", 4, 3));
-        $this->assertTrue($game->placePalisade($faction, "east", 4, 4));
+        $this->assertTrue($game->placePalisade($faction, "south", 7, 2));
+        $this->assertTrue($game->placePalisade($faction, "east", 5, 3));
+        $this->assertTrue($game->placePalisade($faction, "east", 5, 4));
     }
+    public function testGetTerritories1(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $faction = $currentPlayer->getFaction();
+        $territories = $game->getTerritories();
+        $this->assertEquals(1, count($territories));
+    }
+    public function testGetTerritories2(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $faction = $currentPlayer->getFaction();
+        $game->placePalisade($faction, "south", 6, 2);
+        $game->placePalisade($faction, "south", 7, 2);
+        $game->placePalisade($faction, "east", 5, 3);
+        $game->placePalisade($faction, "east", 5, 4);
+        $territories = $game->getTerritories();
+        $this->assertEquals(2, count($territories));
+    }
+    public function testGetGold(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $faction = $currentPlayer->getFaction();
+        $territories = $game->getTerritories();
+        $this->assertEquals(40, $game->getTerritoryGold($territories[0]));
+    }
+    public function testGetGold2(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $faction = $currentPlayer->getFaction();
+        $game->placePalisade($faction, "south", 6, 2);
+        $game->placePalisade($faction, "south", 7, 2);
+        $game->placePalisade($faction, "east", 5, 3);
+        $game->placePalisade($faction, "east", 5, 4);
+        
+        $territories = $game->getTerritories();
+        $gold = 0;
+        $oneGold = $game->getBoard()->getCell(6, 4)->getGold();
+        $this->assertTrue($oneGold === $game->getTerritoryGold($territories[0]) || $oneGold === $game->getTerritoryGold($territories[1]));
+        foreach($territories as $territory){
+            $gold += $game->getTerritoryGold($territory);
+        }
+        $this->assertEquals(40, $gold);
+    }
+
+    public function testWarriorTerritory(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $game->setupWarriors();
+        $game->start();
+        $territories = $game->getTerritories();
+        $result = $game->getTerritoryWarriorSum($territories[0]);
+        $this->assertEquals(0, $result["Mage"]);
+        $this->assertEquals(0, $result["Orc"]);
+    }
+    public function testWarriorTerritory2(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $faction = $currentPlayer->getFaction();
+        $game->placeWarrior($currentPlayer->getFaction(), 1, 0, 0);
+        $territories = $game->getTerritories();
+        $result = $game->getTerritoryWarriorSum($territories[0]);
+        $this->assertEquals(1, $result[$faction]);
+    }
+    public function testWarriorTerritoryGold(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $game->placeWarrior($currentPlayer->getFaction(), 1, 0, 0);
+        $game->splitGold();
+        $teams = $game->getTeams();
+        foreach($teams as $team){
+            if($team->hasFaction($currentPlayer->getFaction())){
+                $gold = $team->getGoldPiles();
+                $this->assertEquals(1, count($gold));
+                $this->assertEquals(40, $gold[0]);
+            }
+        }
+    }
+    public function testWarriorTerritoryGoldSplit(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $game->placeWarrior($currentPlayer->getFaction(), 1, 0, 0);
+        $game->nextPlayer();
+        $currentPlayer = $game->getCurrentPlayer();
+        $game->placeWarrior($currentPlayer->getFaction(), 1, 0, 1);
+        $game->splitGold();
+        $teams = $game->getTeams();
+        foreach($teams as $team){
+            if($team->hasFaction($currentPlayer->getFaction())){
+                $gold = $team->getGoldPiles();
+                $this->assertEquals(1, count($gold));
+                $this->assertEquals(20, $gold[0]);
+            }
+        }
+    }
+    public function testWarriorTerritoryGoldSplitRound(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $game->placeWarrior($currentPlayer->getFaction(), 1, 0, 0);
+        $game->nextPlayer();
+        $currentPlayer = $game->getCurrentPlayer();
+        $game->placeWarrior($currentPlayer->getFaction(), 1, 0, 1);
+        $game->nextPlayer();
+        $currentPlayer = $game->getCurrentPlayer();
+        $game->placeWarrior($currentPlayer->getFaction(), 1, 0, 2);
+        $game->splitGold();
+        $teams = $game->getTeams();
+        foreach($teams as $team){
+            if($team->hasFaction($currentPlayer->getFaction())){
+                $gold = $team->getGoldPiles();
+                $this->assertEquals(1, count($gold));
+                $this->assertEquals(13, $gold[0]);
+            }
+        }
+    }
+
+    public function testTeam4(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $teams = $game->getTeams();
+        $this->assertEquals(2, count($teams));
+        $this->assertEquals(2, count($teams[0]->getFactions()));
+        $this->assertEquals(2, count($teams[1]->getFactions()));
+    }
+    public function testTeam3(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $game->setupWarriors();
+        $game->start();
+        $teams = $game->getTeams();
+        $this->assertEquals(3, count($teams));
+        $this->assertEquals(1, count($teams[0]));
+        $this->assertEquals(1, count($teams[1]));
+        $this->assertEquals(1, count($teams[2]));
+    }
+
 }
 ?>
