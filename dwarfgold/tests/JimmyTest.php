@@ -1112,5 +1112,33 @@ class JimmyTest extends TestCase
         $this->assertEquals(1, count($winners));
         $this->assertEquals($teams[1]->getTeamString(), $winners[0]);
     }
+    public function testWinnerTieishThreeWayBackwards(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $game->placeWarrior($currentPlayer->getFaction(), 1, 0, 0);
+        $teams = $game->getTeams();
+        $teams[1]->addGoldPile(5);
+        $teams[1]->addGoldPile(4);
+        $teams[0]->addGoldPile(3);
+        $teams[0]->addGoldPile(3);
+        $teams[0]->addGoldPile(3);
+        $teams[2]->addGoldPile(3);
+        $teams[2]->addGoldPile(3);
+        $teams[2]->addGoldPile(3);
+        $winners = $game->getWinners();
+        $this->assertEquals(1, count($winners));
+        $this->assertEquals($teams[1]->getTeamString(), $winners[0]);
+    }
 }
 ?>
