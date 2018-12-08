@@ -252,4 +252,28 @@ class Game{
 	public function getTeams(){
 		return $this->teams;
 	}
+
+	public function getWinners(){
+		if(count($this->teams) == 2){
+			$result = $this->teams[0]->compare($this->teams[1]);
+			if($result === 1){
+				return [$this->teams[0]->getTeamString()];
+			} elseif($result === -1){
+				return [$this->teams[1]->getTeamString()];
+			} else{
+				return [$this->teams[0]->getTeamString(), $this->teams[1]->getTeamString()];
+			}
+		} elseif(count($this->teams) == 3){
+			$result01 = $this->teams[0]->compare($this->teams[1]);
+			$result12 = $this->teams[1]->compare($this->teams[2]);
+			if($result01 === 0 && $result12 === 0){
+				return [$this->teams[0]->getTeamString(), $this->teams[1]->getTeamString(), $this->teams[2]->getTeamString()];	
+			}
+			//TODO other ones
+		}
+	}
+
+	//Most gold wins
+	//Biggest Piles Wins
+	//If all equal then tie
 }
