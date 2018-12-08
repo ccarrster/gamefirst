@@ -1034,9 +1034,9 @@ class JimmyTest extends TestCase
         $game->start();
         $teams = $game->getTeams();
         $this->assertEquals(3, count($teams));
-        $this->assertEquals(1, count($teams[0]));
-        $this->assertEquals(1, count($teams[1]));
-        $this->assertEquals(1, count($teams[2]));
+        $this->assertEquals(1, count($teams[0]->getFactions()));
+        $this->assertEquals(1, count($teams[1]->getFactions()));
+        $this->assertEquals(1, count($teams[2]->getFactions()));
     }
     public function testWinnerTie(){
         $game = new Game();
