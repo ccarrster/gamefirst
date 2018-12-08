@@ -1048,6 +1048,7 @@ class JimmyTest extends TestCase
         $game->chooseFaction($keyA, "Orc");
         $game->setupWarriors();
         $game->start();
+        $game->splitGold();
         $winners = $game->getWinners();
         $this->assertEquals(2, count($winners));
     }

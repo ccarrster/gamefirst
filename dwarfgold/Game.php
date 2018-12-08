@@ -254,23 +254,19 @@ class Game{
 	}
 
 	public function getWinners(){
-		if(count($this->teams) == 2){
-			$result = $this->teams[0]->compare($this->teams[1]);
-			if($result === 1){
-				return [$this->teams[0]->getTeamString()];
-			} elseif($result === -1){
-				return [$this->teams[1]->getTeamString()];
-			} else{
-				return [$this->teams[0]->getTeamString(), $this->teams[1]->getTeamString()];
+		usort($this->teams, array('App\Team','Compare'));
+		$localTeams = array_reverse($this->teams);
+		$winners = [];
+		for($i = 0; $i < count($localTeams); $i++){
+			if(count($winners) == 0){
+				$winners[] = $localTeams[0]->getTeamString();;
+			} else {
+				if(Team::Compare($localTeams[0], $localTeams[$i]) === 0){
+					$winners[] = $localTeams[$i]->getTeamString();
+				}
 			}
-		} elseif(count($this->teams) == 3){
-			$result01 = $this->teams[0]->compare($this->teams[1]);
-			$result12 = $this->teams[1]->compare($this->teams[2]);
-			if($result01 === 0 && $result12 === 0){
-				return [$this->teams[0]->getTeamString(), $this->teams[1]->getTeamString(), $this->teams[2]->getTeamString()];	
-			}
-			//TODO other ones
 		}
+		return $winners;
 	}
 
 	//Most gold wins

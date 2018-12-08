@@ -30,9 +30,9 @@ class Team{
 		}
 		return  false;
 	}
-	public function compare($other){
+	public static function Compare($a, $other){
 		$thisSum = 0;
-		foreach($this->goldPiles as $pile){
+		foreach($a->goldPiles as $pile){
 			$thisSum += $pile;
 		}
 		$otherSum = 0;
@@ -44,16 +44,16 @@ class Team{
 		} elseif($thisSum < $otherSum){
 			return -1;
 		} else {
-			$maxIndex = count($this->goldPiles) - 1;
+			$maxIndex = count($a->goldPiles) - 1;
 			if(count($other->goldPiles) - 1 > $maxIndex){
 				$maxIndex = count($other->goldPiles) - 1;
 			}
-			sort($this->goldPiles);
+			sort($a->goldPiles);
 			$otherPiles = $other->getGoldPiles();
 			sort($otherPiles);
 			for($i = 0; $i < $maxIndex; $i++){
-				if(isset($this->goldPiles[$i])){
-					$thisValue = $this->goldPiles[$i];
+				if(isset($a->goldPiles[$i])){
+					$thisValue = $a->goldPiles[$i];
 				} else {
 					$thisValue = 0;
 				}
@@ -71,5 +71,6 @@ class Team{
 				}
 			}
 		}
+		return 0;
 	}
 }
