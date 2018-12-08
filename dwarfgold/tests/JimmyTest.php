@@ -574,5 +574,218 @@ class JimmyTest extends TestCase
         $this->assertEquals(4, $cell->getValue());
         $this->assertEquals($faction, $cell->getFaction());
     }
+
+    public function testPlacePalisadeEast(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $faction = $currentPlayer->getFaction();
+        $cell = $game->getBoard()->getCell(0, 0);
+        $this->assertFalse($cell->hasPalisade('east'));
+        $game->placePalisade($faction, "east", 0, 0);
+        $cell = $game->getBoard()->getCell(0, 0);
+        $this->assertTrue($cell->hasPalisade('east'));
+    }
+    public function testPlacePalisadeSouth(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $faction = $currentPlayer->getFaction();
+        $cell = $game->getBoard()->getCell(0, 0);
+        $this->assertFalse($cell->hasPalisade('south'));
+        $game->placePalisade($faction, "south", 0, 0);
+        $cell = $game->getBoard()->getCell(0, 0);
+        $this->assertTrue($cell->hasPalisade('south'));
+    }
+    public function testPlacePalisadeTwice(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $faction = $currentPlayer->getFaction();
+        $cell = $game->getBoard()->getCell(0, 0);
+        $this->assertTrue($game->placePalisade($faction, "south", 0, 0));
+        $this->assertFalse($game->placePalisade($faction, "south", 0, 0));
+        $cell = $game->getBoard()->getCell(0, 0);
+    }
+    public function testPlacePalisadeInvalidSouth(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $faction = $currentPlayer->getFaction();
+        $cell = $game->getBoard()->getCell(0, 4);
+        $this->assertFalse($game->placePalisade($faction, "south", 0, 4));
+    }
+    public function testPlacePalisadeValidShape(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $faction = $currentPlayer->getFaction();
+        $this->assertTrue($game->placePalisade($faction, "south", 0, 0));
+        $this->assertTrue($game->placePalisade($faction, "south", 1, 0));
+        $this->assertTrue($game->placePalisade($faction, "south", 2, 0));
+        $this->assertTrue($game->placePalisade($faction, "south", 3, 0));
+        $this->assertTrue($game->placePalisade($faction, "east", 3, 0));
+    }
+    public function testPlacePalisadeInvalidShape(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $faction = $currentPlayer->getFaction();
+        $this->assertTrue($game->placePalisade($faction, "south", 0, 0));
+        $this->assertTrue($game->placePalisade($faction, "south", 1, 0));
+        $this->assertTrue($game->placePalisade($faction, "south", 2, 0));
+        $this->assertFalse($game->placePalisade($faction, "east", 2, 0));
+        $this->assertFalse($game->getBoard()->getCell(2, 0)->hasPalisade('east'));
+    }
+    public function testPlacePalisadeInvalidShape2(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $faction = $currentPlayer->getFaction();
+        $this->assertTrue($game->placePalisade($faction, "east", 0, 0));
+        $this->assertTrue($game->placePalisade($faction, "east", 1, 0));
+        $this->assertTrue($game->placePalisade($faction, "east", 2, 0));
+        $this->assertFalse($game->placePalisade($faction, "south", 2, 0));
+        $this->assertFalse($game->getBoard()->getCell(2, 0)->hasPalisade('south'));
+    }
+
+    public function testPlacePalisadeValidShapeBottomLeft(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $faction = $currentPlayer->getFaction();
+        $this->assertTrue($game->placePalisade($faction, "south", 0, 2));
+        $this->assertTrue($game->placePalisade($faction, "south", 1, 2));
+        $this->assertTrue($game->placePalisade($faction, "east", 1, 3));
+        $this->assertTrue($game->placePalisade($faction, "east", 1, 4));
+    }
+
+    public function testPlacePalisadeValidShapeBottomRight(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $faction = $currentPlayer->getFaction();
+        $this->assertTrue($game->placePalisade($faction, "south", 5, 2));
+        $this->assertTrue($game->placePalisade($faction, "south", 6, 2));
+        $this->assertTrue($game->placePalisade($faction, "east", 4, 3));
+        $this->assertTrue($game->placePalisade($faction, "east", 4, 4));
+    }
 }
 ?>

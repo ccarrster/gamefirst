@@ -7,9 +7,14 @@ class Cell{
 	var $eastPalisade = false;
 	var $value = 0;
 	var $faction = null;
+	var $canSouthPalisade;
+	var $canEastPalisade;
+	var $visited = false;
 
-	public function __construct(){
+	public function __construct($canSouthPalisade, $canEastPalisade){
 		$this->canGold = false;
+		$this->canSouthPalisade = $canSouthPalisade;
+		$this->canEastPalisade = $canEastPalisade;
 	}
 	public function hasGold(){
 		return $this->canGold;
@@ -44,5 +49,37 @@ class Cell{
 	}
 	public function getFaction(){
 		return  $this->faction;
+	}
+	public function placePalisade($side){
+		if($side === "south"){
+			if($this->canSouthPalisade === false || $this->southPalisade == true){
+				return false;
+			}
+			$this->southPalisade = true;
+			return true;
+		} elseif($side === "east"){
+			if($this->canEastPalisade === false || $this->eastPalisade == true){
+				return false;
+			}
+			$this->eastPalisade = true;
+			return true;
+		}
+		return false;
+	}
+	public function removePalisade($side){
+		if($side === "south"){
+			if($this->canSouthPalisade === false || $this->southPalisade == false){
+				return false;
+			}
+			$this->southPalisade = false;
+			return true;
+		} elseif($side === "east"){
+			if($this->canEastPalisade === false || $this->eastPalisade == false){
+				return false;
+			}
+			$this->eastPalisade = false;
+			return true;
+		}
+		return false;
 	}
 }

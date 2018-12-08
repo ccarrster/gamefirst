@@ -163,4 +163,7 @@ class Game{
 			return false;
 		}
 	}
+	public function placePalisade($faction, $side, $x, $y){
+		return $this->board->placePalisade($faction, $side, $x, $y);
+	}
 }
