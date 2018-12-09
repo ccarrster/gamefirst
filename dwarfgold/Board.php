@@ -180,4 +180,38 @@ class Board{
 			}
 		}
 	}
+
+	public function getAllWarriors(){
+		$warriors = [];
+		for($x = 0; $x < 8; $x++){
+			for($y = 0; $y < 5; $y++){
+				$faction = $this->cells[$x][$y]->getFaction();
+				if($faction !== null){
+					$warrior = new \stdClass();
+					$warrior->x = $x;
+					$warrior->y = $y;
+					$warrior->faction = $faction;
+					$warriors[] = $warrior;
+				}
+			}
+		}
+		return $warriors;
+	}
+
+	public function getFreeSquares(){
+		$freeSquares = [];
+		for($x = 0; $x < 8; $x++){
+			for($y = 0; $y < 5; $y++){
+				$faction = $this->cells[$x][$y]->getFaction();
+				$hasGold = $this->cells[$x][$y]->hasGold();
+				if($faction === null && $hasGold === false){
+					$cell = new \stdClass();
+					$cell->x = $x;
+					$cell->y = $y;
+					$freeSquares[] = $cell;
+				}
+			}
+		}
+		return $freeSquares;
+	}
 }

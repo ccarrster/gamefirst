@@ -269,7 +269,29 @@ class Game{
 		return $winners;
 	}
 
-	//Most gold wins
-	//Biggest Piles Wins
-	//If all equal then tie
+	public function getMageTargets(){
+		$factionsToAdd = [];
+		foreach($this->teams as $team){
+			if($team->hasFaction("Mage") === false){
+				$factions = $team->getFactions();
+				foreach($factions as $faction){
+					$factionsToAdd[] = $faction;
+				}
+			}
+		}
+		$warriors = $this->board->getAllWarriors();
+		$enemyWarriors = [];
+		foreach($warriors as $warrior){
+			$warriorFaction = $warrior->faction;
+			if(in_array($warriorFaction, $factionsToAdd)){
+				$enemyWarriors[] = $warrior;
+			}
+		}
+		return $enemyWarriors;
+	}
+
+	public function getFreeSquares(){
+		$freeSquares = $this->board->getFreeSquares();
+		return $freeSquares;
+	}
 }

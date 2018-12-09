@@ -1141,5 +1141,60 @@ class JimmyTest extends TestCase
         $this->assertEquals(1, count($winners));
         $this->assertEquals($teams[1]->getTeamString(), $winners[0]);
     }
+    public function testGetMageTargets(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $game->placeWarrior($currentPlayer->getFaction(), 1, 0, 0);
+        $game->nextPlayer();
+        $currentPlayer = $game->getCurrentPlayer();
+        $game->placeWarrior($currentPlayer->getFaction(), 1, 0, 1);
+        $game->nextPlayer();
+        $currentPlayer = $game->getCurrentPlayer();
+        $game->placeWarrior($currentPlayer->getFaction(), 1, 0, 2);
+        $game->splitGold();
+        $teams = $game->getTeams();
+        foreach($teams as $team){
+           $targets = $game->getMageTargets();
+           $this->assertEquals(2, count($targets));
+        }
+    }
+    public function testGetGoblinTargets(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $game->setupWarriors();
+        $game->start();
+        $currentPlayer = $game->getCurrentPlayer();
+        $game->placeWarrior($currentPlayer->getFaction(), 1, 0, 0);
+        $game->nextPlayer();
+        $currentPlayer = $game->getCurrentPlayer();
+        $game->placeWarrior($currentPlayer->getFaction(), 1, 0, 1);
+        $game->nextPlayer();
+        $currentPlayer = $game->getCurrentPlayer();
+        $game->placeWarrior($currentPlayer->getFaction(), 1, 0, 2);
+        $targets = $game->getFreeSquares();
+        $this->assertEquals(29, count($game->getFreeSquares()));
+    }
+    public function testIsTerritoryFull(){
+        
+    }
 }
 ?>
