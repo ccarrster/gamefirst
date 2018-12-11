@@ -10,6 +10,7 @@ class Cell{
 	var $canSouthPalisade;
 	var $canEastPalisade;
 	var $visited = false;
+	var $reinforcment = false;
 
 	public function __construct($canSouthPalisade, $canEastPalisade){
 		$this->canGold = false;
@@ -49,6 +50,12 @@ class Cell{
 	}
 	public function getFaction(){
 		return  $this->faction;
+	}
+	public function hasReinforcement(){
+		return $this->reinforcment;
+	}
+	public function setReinforcment($value){
+		$this->reinforcment = $value;
 	}
 	public function placePalisade($side){
 		if($side === "south"){

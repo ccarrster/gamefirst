@@ -224,4 +224,41 @@ class Board{
 		}
 		return true;
 	}
+
+	public function isTerritoryHaveReinforcement($territory){
+		foreach($territory as $coordinates){
+			$cell = $this->cells[$coordinates[0]][$coordinates[1]];
+			if($cell->hasReinforcement() === true){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public function getMatchingFactionCells($territory, $faction){
+		$cells = [];
+		foreach($territory as $coordinates){
+			$cell = $this->cells[$coordinates[0]][$coordinates[1]];
+			if($cell->getFaction() === $faction){
+				$cells[] = $cell;
+			}
+		}
+		return $cells;
+	}
+
+	public function getReinforcmentTargets($faction){
+		$targetCells = [];
+		$territories = $this->getTerritories();
+		foreach($territories as $territory){
+			$full = $this->isTerritoryFull($territory);
+			$hasReinforcment = $this->isTerritoryHaveReinforcement($territory);
+			if($full && !$hasReinforcment){
+				$cells = $this->getMatchingFactionCells($territory, $faction);
+				foreach($cells as $cell){
+					$targetCells[] = $cell;
+				}
+			}
+		}
+		return $targetCells;
+	}
 }

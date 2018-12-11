@@ -1383,5 +1383,124 @@ class JimmyTest extends TestCase
         $board->getCell(2, 1)->setValue(1);
         $this->assertEquals(0, count($game->getArrowTargets()));
     }
+    public function testGetReinforcementTargets(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $board = $game->getBoard();
+        $board->placePalisade("Mage", "south", 0, 1);
+        $board->placePalisade("Mage", "south", 1, 1);
+        $board->placePalisade("Mage", "east", 1, 0);
+        $board->placePalisade("Mage", "east", 1, 1);
+        $board->getCell(0, 0)->setFaction("Mage");
+        $board->getCell(0, 0)->setValue(1);
+        $board->getCell(0, 1)->setFaction("Mage");
+        $board->getCell(0, 1)->setValue(1);
+        $board->getCell(1, 0)->setFaction("Mage");
+        $board->getCell(1, 0)->setValue(1);
+        $targets = $game->getReinforcmentTargets("Mage");
+        $this->assertEquals(3, count($targets));
+    }
+    public function testGetReinforcementTargetsAlreadyReinforced(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $board = $game->getBoard();
+        $board->placePalisade("Mage", "south", 0, 1);
+        $board->placePalisade("Mage", "south", 1, 1);
+        $board->placePalisade("Mage", "east", 1, 0);
+        $board->placePalisade("Mage", "east", 1, 1);
+        $board->getCell(0, 0)->setFaction("Mage");
+        $board->getCell(0, 0)->setValue(1);
+        $board->getCell(0, 1)->setFaction("Mage");
+        $board->getCell(0, 1)->setValue(1);
+        $board->getCell(1, 0)->setFaction("Mage");
+        $board->getCell(1, 0)->setValue(1);
+        $board->getCell(1, 0)->setReinforcment(true);
+        $targets = $game->getReinforcmentTargets("Mage");
+        $this->assertEquals(0, count($targets));
+    }
+    public function testGetReinforcementTargetsNotFull(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $board = $game->getBoard();
+        $board->placePalisade("Mage", "south", 0, 1);
+        $board->placePalisade("Mage", "south", 1, 1);
+        $board->placePalisade("Mage", "east", 1, 0);
+        $board->placePalisade("Mage", "east", 1, 1);
+        $board->getCell(0, 0)->setFaction("Mage");
+        $board->getCell(0, 0)->setValue(1);
+        $board->getCell(0, 1)->setFaction("Mage");
+        $board->getCell(0, 1)->setValue(1);
+        $targets = $game->getReinforcmentTargets("Mage");
+        $this->assertEquals(0, count($targets));
+    }
+    public function testGetReinforcementTargetsNoPlayersWarriors(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $board = $game->getBoard();
+        $board->placePalisade("Mage", "south", 0, 1);
+        $board->placePalisade("Mage", "south", 1, 1);
+        $board->placePalisade("Mage", "east", 1, 0);
+        $board->placePalisade("Mage", "east", 1, 1);
+        $board->getCell(0, 0)->setFaction("Orc");
+        $board->getCell(0, 0)->setValue(1);
+        $board->getCell(0, 1)->setFaction("Elf");
+        $board->getCell(0, 1)->setValue(1);
+        $board->getCell(1, 0)->setFaction("Goblin");
+        $board->getCell(1, 0)->setValue(1);
+        $targets = $game->getReinforcmentTargets("Mage");
+        $this->assertEquals(0, count($targets));
+    }
 }
 ?>

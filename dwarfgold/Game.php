@@ -331,4 +331,7 @@ class Game{
 		}
 		return $targetCells;
 	}
+	public function getReinforcmentTargets($faction){
+		return $this->board->getReinforcmentTargets($faction);
+	}
 }
