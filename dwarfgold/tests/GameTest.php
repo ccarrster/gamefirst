@@ -1502,5 +1502,11 @@ class JimmyTest extends TestCase
         $targets = $game->getReinforcmentTargets("Mage");
         $this->assertEquals(0, count($targets));
     }
+    public function testScoreReinforcement(){
+        //$this->fail();
+    }
+    public function testTieWinReinforcement(){
+        //$this->fail();
+    }
 }
 ?>
