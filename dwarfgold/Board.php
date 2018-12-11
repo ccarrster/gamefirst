@@ -214,4 +214,14 @@ class Board{
 		}
 		return $freeSquares;
 	}
+
+	public function isTerritoryFull($territory){
+		foreach($territory as $coordinates){
+			$cell = $this->cells[$coordinates[0]][$coordinates[1]];
+			if($cell->hasGold() === false && $cell->isEmpty()){
+				return false;
+			}
+		}
+		return true;
+	}
 }

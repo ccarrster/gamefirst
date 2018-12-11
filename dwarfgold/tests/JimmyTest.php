@@ -1193,8 +1193,195 @@ class JimmyTest extends TestCase
         $targets = $game->getFreeSquares();
         $this->assertEquals(29, count($game->getFreeSquares()));
     }
-    public function testIsTerritoryFull(){
-        
+    public function testIsTerritoryFullEmpty(){
+        $board = new Board();
+        $board->placePalisade("Mage", "south", 0, 1);
+        $board->placePalisade("Mage", "south", 1, 1);
+        $board->placePalisade("Mage", "east", 1, 0);
+        $board->placePalisade("Mage", "east", 1, 1);
+        $territories = $board->getTerritories();
+        foreach($territories as $territory){
+            if(count($territory) === 4){
+                $this->assertFalse($board->isTerritoryFull($territory));
+            }
+        }
+    }
+    public function testIsTerritoryFullFull(){
+        $board = new Board();
+        $board->placePalisade("Mage", "south", 0, 1);
+        $board->placePalisade("Mage", "south", 1, 1);
+        $board->placePalisade("Mage", "east", 1, 0);
+        $board->placePalisade("Mage", "east", 1, 1);
+        $board->getCell(0, 0)->setFaction("Mage");
+        $board->getCell(0, 0)->setValue(1);
+        $board->getCell(0, 1)->setFaction("Mage");
+        $board->getCell(0, 1)->setValue(1);
+        $board->getCell(1, 0)->setFaction("Mage");
+        $board->getCell(1, 0)->setValue(1);
+        $territories = $board->getTerritories();
+        foreach($territories as $territory){
+            if(count($territory) === 4){
+                $this->assertTrue($board->isTerritoryFull($territory));
+            }
+        }
+    }
+    public function testGetArrowTargets(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $game->setupWarriors();
+        $game->start();
+        $board = $game->getBoard();
+        $board->getCell(0, 0)->setFaction("Mage");
+        $board->getCell(0, 0)->setValue(1);
+        $board->getCell(0, 1)->setFaction("Elf");
+        $board->getCell(0, 1)->setValue(1);
+        $this->assertEquals(1, count($game->getArrowTargets()));
+    }
+    public function testGetArrowTargetsNoElf(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $game->setupWarriors();
+        $game->start();
+        $board = $game->getBoard();
+        $board->getCell(0, 0)->setFaction("Mage");
+        $board->getCell(0, 0)->setValue(1);
+        $this->assertEquals(0, count($game->getArrowTargets()));
+    }
+    public function testGetArrowTargetsNoEnemy(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $game->setupWarriors();
+        $game->start();
+        $board = $game->getBoard();
+        $board->getCell(0, 0)->setFaction("Elf");
+        $board->getCell(0, 0)->setValue(1);
+        $this->assertEquals(0, count($game->getArrowTargets()));
+    }
+    public function testGetArrowTargetsAlly(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $board = $game->getBoard();
+        $teams = $game->getTeams();
+        $allyFaction = null;
+        foreach($teams as $team){
+            if($team->hasFaction("Elf")){
+                $factions = $team->getFactions();
+                foreach($factions as $faction){
+                    if($faction !== "Elf"){
+                        $allyFaction = $faction;
+                    }
+                }
+            }
+        }
+        $board->getCell(0, 0)->setFaction("Elf");
+        $board->getCell(0, 0)->setValue(1);
+        $board->getCell(0, 1)->setFaction($allyFaction);
+        $board->getCell(0, 1)->setValue(1);
+        $this->assertEquals(0, count($game->getArrowTargets()));
+    }
+    public function testGetArrowTargets4PlayerEnemy(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $board = $game->getBoard();
+        $teams = $game->getTeams();
+        $enemyFaction = null;
+        foreach($teams as $team){
+            if(!$team->hasFaction("Elf")){
+                $factions = $team->getFactions();
+                $enemyFaction = $factions[0];
+            }
+        }
+        $board->getCell(0, 0)->setFaction("Elf");
+        $board->getCell(0, 0)->setValue(1);
+        $board->getCell(0, 1)->setFaction($enemyFaction);
+        $board->getCell(0, 1)->setValue(1);
+        $this->assertEquals(1, count($game->getArrowTargets()));
+    }
+
+    public function testGetArrowTargets4PlayerEnemyOtherTerritory(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $playerC = new Player();
+        $keyC = $game->addPlayer($playerC);
+        $game->chooseFaction($keyC, "Goblin");
+        $game->setupWarriors();
+        $game->start();
+        $board = $game->getBoard();
+        $teams = $game->getTeams();
+        $enemyFaction = null;
+        foreach($teams as $team){
+            if(!$team->hasFaction("Elf")){
+                $factions = $team->getFactions();
+                $enemyFaction = $factions[0];
+            }
+        }
+        $board->placePalisade("Mage", "south", 0, 1);
+        $board->placePalisade("Mage", "south", 1, 1);
+        $board->placePalisade("Mage", "east", 1, 0);
+        $board->placePalisade("Mage", "east", 1, 1);
+        $board->getCell(0, 0)->setFaction("Elf");
+        $board->getCell(0, 0)->setValue(1);
+        $board->getCell(2, 1)->setFaction($enemyFaction);
+        $board->getCell(2, 1)->setValue(1);
+        $this->assertEquals(0, count($game->getArrowTargets()));
     }
 }
 ?>

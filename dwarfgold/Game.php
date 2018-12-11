@@ -294,4 +294,41 @@ class Game{
 		$freeSquares = $this->board->getFreeSquares();
 		return $freeSquares;
 	}
+
+	public function getArrowTargets(){
+		$targetCells = [];
+		$targetFactions = [];
+		foreach($this->teams as $team){
+			if($team->hasFaction("Elf") === false){
+				foreach($team->getFactions() as $faction){
+					$targetFactions[] = $faction;
+				}
+			}
+		}
+		$territories = $this->board->getTerritories();
+		foreach($territories as $territory){
+			$hasElf = false;
+			$enemies = [];
+			$isFull = $this->board->isTerritoryFull($territory);
+			foreach($territory as $coordinates){
+				$cell = $this->board->getCell($coordinates[0], $coordinates[1]);
+				$faction = $cell->getFaction();
+				if($faction === "Elf"){
+					$hasElf = true;
+				} else{
+					if($faction !== null){
+						if(in_array($faction, $targetFactions) === true){
+							$enemies[] = $cell;
+						}
+					}
+				}
+			}
+			if($hasElf && !$isFull && count($enemies) > 0){
+				foreach($enemies as $enemyCell){
+					$targetCells[] = $enemyCell;
+				}
+			}
+		}
+		return $targetCells;
+	}
 }
