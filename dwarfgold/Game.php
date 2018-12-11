@@ -1,7 +1,9 @@
 <?php
 namespace App;
+require_once('config.php');
 require_once('Board.php');
 require_once('Team.php');
+
 
 class Game{
 	var $board;
@@ -18,10 +20,10 @@ class Game{
 
 	public function __construct(){
 		$this->board = new Board();
-		$this->factions[] = "Orc";
-		$this->factions[] = "Goblin";
-		$this->factions[] = "Elf";
-		$this->factions[] = "Mage";
+		$this->factions[] = DwarfGoldConfig::ORC;
+		$this->factions[] = DwarfGoldConfig::GOBLIN;
+		$this->factions[] = DwarfGoldConfig::ELF;
+		$this->factions[] = DwarfGoldConfig::MAGE;
 		foreach($this->factions as $faction){
 			$this->availableFactions[] = $faction;
 		}
@@ -112,13 +114,13 @@ class Game{
 		if($this->advancedMode === true){
 			foreach($this->players as $player){
 				$faction = $player->getFaction();
-				if($faction == "Mage"){
+				if($faction == DwarfGoldConfig::MAGE){
 					$player->setPowerTokens(2);
-				} elseif($faction == "Elf"){
+				} elseif($faction == DwarfGoldConfig::ELF){
 					$player->setPowerTokens(2);
-				} elseif($faction == "Orc"){
+				} elseif($faction == DwarfGoldConfig::ORC){
 					$player->setPowerTokens(1);
-				} elseif($faction == "Goblin"){
+				} elseif($faction == DwarfGoldConfig::GOBLIN){
 					$player->setPowerTokens(1);
 				}
 				$player->setReinforcements(1);
@@ -269,10 +271,10 @@ class Game{
 		return $winners;
 	}
 
-	public function getMageTargets(){
+	public function getEnemyTargets($inFaction){
 		$factionsToAdd = [];
 		foreach($this->teams as $team){
-			if($team->hasFaction("Mage") === false){
+			if($team->hasFaction($inFaction) === false){
 				$factions = $team->getFactions();
 				foreach($factions as $faction){
 					$factionsToAdd[] = $faction;
@@ -295,11 +297,11 @@ class Game{
 		return $freeSquares;
 	}
 
-	public function getArrowTargets(){
+	public function getArrowTargets($inFaction){
 		$targetCells = [];
 		$targetFactions = [];
 		foreach($this->teams as $team){
-			if($team->hasFaction("Elf") === false){
+			if($team->hasFaction($inFaction) === false){
 				foreach($team->getFactions() as $faction){
 					$targetFactions[] = $faction;
 				}
@@ -307,14 +309,14 @@ class Game{
 		}
 		$territories = $this->board->getTerritories();
 		foreach($territories as $territory){
-			$hasElf = false;
+			$hasInFaction = false;
 			$enemies = [];
 			$isFull = $this->board->isTerritoryFull($territory);
 			foreach($territory as $coordinates){
 				$cell = $this->board->getCell($coordinates[0], $coordinates[1]);
 				$faction = $cell->getFaction();
-				if($faction === "Elf"){
-					$hasElf = true;
+				if($faction === $inFaction){
+					$hasInFaction = true;
 				} else{
 					if($faction !== null){
 						if(in_array($faction, $targetFactions) === true){
@@ -323,7 +325,7 @@ class Game{
 					}
 				}
 			}
-			if($hasElf && !$isFull && count($enemies) > 0){
+			if($hasInFaction && !$isFull && count($enemies) > 0){
 				foreach($enemies as $enemyCell){
 					$targetCells[] = $enemyCell;
 				}

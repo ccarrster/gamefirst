@@ -1165,7 +1165,7 @@ class JimmyTest extends TestCase
         $game->splitGold();
         $teams = $game->getTeams();
         foreach($teams as $team){
-           $targets = $game->getMageTargets();
+           $targets = $game->getEnemyTargets("Mage");
            $this->assertEquals(2, count($targets));
         }
     }
@@ -1243,7 +1243,7 @@ class JimmyTest extends TestCase
         $board->getCell(0, 0)->setValue(1);
         $board->getCell(0, 1)->setFaction("Elf");
         $board->getCell(0, 1)->setValue(1);
-        $this->assertEquals(1, count($game->getArrowTargets()));
+        $this->assertEquals(1, count($game->getArrowTargets("Elf")));
     }
     public function testGetArrowTargetsNoElf(){
         $game = new Game();
@@ -1261,7 +1261,7 @@ class JimmyTest extends TestCase
         $board = $game->getBoard();
         $board->getCell(0, 0)->setFaction("Mage");
         $board->getCell(0, 0)->setValue(1);
-        $this->assertEquals(0, count($game->getArrowTargets()));
+        $this->assertEquals(0, count($game->getArrowTargets("Elf")));
     }
     public function testGetArrowTargetsNoEnemy(){
         $game = new Game();
@@ -1279,7 +1279,7 @@ class JimmyTest extends TestCase
         $board = $game->getBoard();
         $board->getCell(0, 0)->setFaction("Elf");
         $board->getCell(0, 0)->setValue(1);
-        $this->assertEquals(0, count($game->getArrowTargets()));
+        $this->assertEquals(0, count($game->getArrowTargets("Elf")));
     }
     public function testGetArrowTargetsAlly(){
         $game = new Game();
@@ -1314,7 +1314,7 @@ class JimmyTest extends TestCase
         $board->getCell(0, 0)->setValue(1);
         $board->getCell(0, 1)->setFaction($allyFaction);
         $board->getCell(0, 1)->setValue(1);
-        $this->assertEquals(0, count($game->getArrowTargets()));
+        $this->assertEquals(0, count($game->getArrowTargets("Elf")));
     }
     public function testGetArrowTargets4PlayerEnemy(){
         $game = new Game();
@@ -1345,7 +1345,7 @@ class JimmyTest extends TestCase
         $board->getCell(0, 0)->setValue(1);
         $board->getCell(0, 1)->setFaction($enemyFaction);
         $board->getCell(0, 1)->setValue(1);
-        $this->assertEquals(1, count($game->getArrowTargets()));
+        $this->assertEquals(1, count($game->getArrowTargets("Elf")));
     }
 
     public function testGetArrowTargets4PlayerEnemyOtherTerritory(){
@@ -1381,7 +1381,7 @@ class JimmyTest extends TestCase
         $board->getCell(0, 0)->setValue(1);
         $board->getCell(2, 1)->setFaction($enemyFaction);
         $board->getCell(2, 1)->setValue(1);
-        $this->assertEquals(0, count($game->getArrowTargets()));
+        $this->assertEquals(0, count($game->getArrowTargets("Elf")));
     }
     public function testGetReinforcementTargets(){
         $game = new Game();
