@@ -1503,10 +1503,112 @@ class JimmyTest extends TestCase
         $this->assertEquals(0, count($targets));
     }
     public function testScoreReinforcement(){
-        //$this->fail();
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $game->setupWarriors();
+        $game->start();
+        $board = $game->getBoard();
+        $board->placePalisade("Mage", "south", 0, 1);
+        $board->placePalisade("Mage", "south", 1, 1);
+        $board->placePalisade("Mage", "east", 1, 0);
+        $board->placePalisade("Mage", "east", 1, 1);
+        $board->getCell(0, 0)->setFaction("Orc");
+        $board->getCell(0, 0)->setValue(1);
+        $board->getCell(0, 0)->setReinforcment(true);
+        $board->getCell(0, 1)->setFaction("Elf");
+        $board->getCell(0, 1)->setValue(1);
+        $board->getCell(1, 0)->setFaction("Mage");
+        $board->getCell(1, 0)->setValue(1);
+        $cellGold = $board->getCell(1, 1)->getGold();
+        $game->splitGold();
+        $teams = $game->getTeams();
+        foreach($teams as $team){
+            if($team->hasFaction("Orc")){
+                $gold = $team->getGoldPiles();
+                $this->assertEquals(2, count($gold));
+                $this->assertTrue($cellGold == $gold[0] || $cellGold == $gold[1]);
+            }
+        }
     }
     public function testTieWinReinforcement(){
-        //$this->fail();
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $game->setupWarriors();
+        $game->start();
+        $board = $game->getBoard();
+        $board->placePalisade("Mage", "south", 0, 1);
+        $board->placePalisade("Mage", "south", 1, 1);
+        $board->placePalisade("Mage", "east", 1, 0);
+        $board->placePalisade("Mage", "east", 1, 1);
+        $board->getCell(0, 0)->setFaction("Orc");
+        $board->getCell(0, 0)->setValue(1);
+        $board->getCell(0, 0)->setReinforcment(true);
+        $board->getCell(0, 1)->setFaction("Elf");
+        $board->getCell(0, 1)->setValue(1);
+        $board->getCell(1, 0)->setFaction("Mage");
+        $board->getCell(1, 0)->setValue(2);
+        $cellGold = $board->getCell(1, 1)->getGold();
+        $game->splitGold();
+        $teams = $game->getTeams();
+        foreach($teams as $team){
+            if($team->hasFaction("Orc")){
+                $gold = $team->getGoldPiles();
+                $this->assertEquals(2, count($gold));
+                $this->assertTrue($cellGold == $gold[0] || $cellGold == $gold[1]);
+            }
+        }
+    }
+    public function testElfArrowWin(){
+        $game = new Game();
+        $player = new Player();
+        $key = $game->addPlayer($player);
+        $game->chooseFaction($key, "Mage");
+        $playerA = new Player();
+        $keyA = $game->addPlayer($playerA);
+        $game->chooseFaction($keyA, "Orc");
+        $playerB = new Player();
+        $keyB = $game->addPlayer($playerB);
+        $game->chooseFaction($keyB, "Elf");
+        $game->setupWarriors();
+        $game->start();
+        $board = $game->getBoard();
+        $board->placePalisade("Mage", "south", 0, 1);
+        $board->placePalisade("Mage", "south", 1, 1);
+        $board->placePalisade("Mage", "east", 1, 0);
+        $board->placePalisade("Mage", "east", 1, 1);
+        $board->getCell(0, 0)->setFaction("Orc");
+        $board->getCell(0, 0)->setValue(1);
+        $board->getCell(0, 0)->addArrow(true);
+        $board->getCell(0, 1)->setFaction("Elf");
+        $board->getCell(0, 1)->setValue(1);
+        $board->getCell(1, 0)->setFaction("Mage");
+        $board->getCell(1, 0)->setValue(1);
+        $cellGold = $board->getCell(1, 1)->getGold();
+        $game->splitGold();
+        $teams = $game->getTeams();
+        foreach($teams as $team){
+            if($team->hasFaction("Orc")){
+                $gold = $team->getGoldPiles();
+                $this->assertEquals(1, count($gold));
+                $this->assertTrue($cellGold == $gold[0] || $cellGold == $gold[1]);
+            }
+        }
     }
 }
 ?>

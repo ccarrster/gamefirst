@@ -11,6 +11,7 @@ class Cell{
 	var $canEastPalisade;
 	var $visited = false;
 	var $reinforcment = false;
+	var $arrowCount = 0;
 
 	public function __construct($canSouthPalisade, $canEastPalisade){
 		$this->canGold = false;
@@ -88,5 +89,11 @@ class Cell{
 			return true;
 		}
 		return false;
+	}
+	public function getArrows(){
+		return $this->arrowCount;
+	}
+	public function addArrow(){
+		$this->arrowCount += 1;
 	}
 }

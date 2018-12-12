@@ -213,11 +213,26 @@ class Game{
 		}
 		return $results;
 	}
+
+
+	public function getFactionWithReinforcmentsInTerritory($territory){
+		foreach($territory as $cell){
+			$boardCell = $this->board->getCell($cell[0], $cell[1]);
+			if($boardCell->hasReinforcement()){
+				return $boardCell->getFaction();
+			}
+		}
+		return null;
+	}
+
 	public function splitGold(){
 		$territories = $this->getTerritories();
 		foreach($territories as $territory){
+			$reinforcmentFaction = $this->getFactionWithReinforcmentsInTerritory($territory);
 			$factionValue = $this->getTerritoryWarriorSum($territory);
 			$teamValues = [];
+			$reinforcmentTeam = null;
+			//Group warrior values by team instead of faction
 			foreach($factionValue as $faction=>$value){
 				foreach($this->teams as $team){
 					if($team->hasFaction($faction)){
@@ -225,11 +240,17 @@ class Game{
 							$teamValues[$team->getTeamString()] = 0;
 						}
 						$teamValues[$team->getTeamString()] += $value;
+						//Reinforcments add one
+						if($reinforcmentFaction == $faction){
+							$teamValues[$team->getTeamString()] += 1;
+							$reinforcmentTeam = $team->getTeamString();
+						}
 					}
 				}
 			}
 			$maxValue = 0;
 			$maxTeams = [];
+			//The highest value gets the gold, if tied they split
 			foreach($teamValues as $teamString=>$value){
 				if($value > $maxValue){
 					$maxValue = $value;
@@ -239,6 +260,15 @@ class Game{
 					$maxTeams[] = $teamString;
 				}
 			}
+			//Reinforcments Win Ties
+			foreach($maxTeams as $maxTeam){
+				if($maxTeam === $reinforcmentTeam){
+					$maxTeams = [];
+					$maxTeams[] = $reinforcmentTeam;
+					break;
+				}
+			}
+			//Get and split the gold to the teams
 			$gold = $this->getTerritoryGold($territory);
 			$splitGold = floor($gold/count($maxTeams));
 			foreach($maxTeams as $teamString){
