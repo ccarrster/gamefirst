@@ -225,11 +225,24 @@ class Game{
 		return null;
 	}
 
+	public function getTerritoryFactionArrows($territory){
+		$factionArrows = [];
+		foreach($territory as $cell){
+			$boardCell = $this->board->getCell($cell[0], $cell[1]);
+			if(!isset($factionArrows[$boardCell->getFaction()])){
+				$factionArrows[$boardCell->getFaction()] = 0;
+			}
+			$factionArrows[$boardCell->getFaction()] += $boardCell->getArrows();			
+		}
+		return $factionArrows;
+	}
+
 	public function splitGold(){
 		$territories = $this->getTerritories();
 		foreach($territories as $territory){
 			$reinforcmentFaction = $this->getFactionWithReinforcmentsInTerritory($territory);
 			$factionValue = $this->getTerritoryWarriorSum($territory);
+			$factionArrows = $this->getTerritoryFactionArrows($territory);
 			$teamValues = [];
 			$reinforcmentTeam = null;
 			//Group warrior values by team instead of faction
@@ -244,6 +257,12 @@ class Game{
 						if($reinforcmentFaction == $faction){
 							$teamValues[$team->getTeamString()] += 1;
 							$reinforcmentTeam = $team->getTeamString();
+						}
+						//Arrows take away (can be up to 2, can to into negative values)
+						foreach($factionArrows as $factionArrow=>$arrowCount){
+							if($factionArrow == $faction){
+								$teamValues[$team->getTeamString()] -= $arrowCount;
+							}
 						}
 					}
 				}
