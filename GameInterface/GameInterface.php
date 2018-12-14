@@ -1,5 +1,10 @@
 <?php
 
+/**
+Stateless game api
+Client does not need to hold the state, just the game id and playerids
+*/
+
 interface iGameFirst
 {
 	/**

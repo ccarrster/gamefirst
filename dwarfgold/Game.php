@@ -384,5 +384,5 @@ class Game{
 	}
 	public function getReinforcmentTargets($faction){
 		return $this->board->getReinforcmentTargets($faction);
-	}
+	}	
 }

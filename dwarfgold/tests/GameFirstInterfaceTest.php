@@ -2,11 +2,13 @@
 use PHPUnit\Framework\TestCase;
 use App\DwarfGold;
 require_once('DwarfGold.php');
+require_once('../FilePersistance.php');
 
 class GameFirstInterfaceTest extends TestCase
 {
 	public function testOptionsPlayers(){
-		$sut = new DwarfGold();
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
 		$options = $sut->getGameOptions();
 		$this->assertTrue(isset($options['numberOfPlayers']));
 		$playerOptions = $options['numberOfPlayers'];
@@ -15,7 +17,8 @@ class GameFirstInterfaceTest extends TestCase
 		$this->assertEquals(4, $playerOptions[2]);
 	}
 	public function testOptionsPlayersFactions(){
-		$sut = new DwarfGold();
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
 		$options = $sut->getGameOptions();
 		$this->assertTrue(isset($options['factions']));
 		$factionOptions = $options['factions'];
@@ -25,7 +28,8 @@ class GameFirstInterfaceTest extends TestCase
 		$this->assertEquals("Elf", $factionOptions[3]);
 	}
 	public function testOptionsAdvancedOptions(){
-		$sut = new DwarfGold();
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
 		$options = $sut->getGameOptions();
 		$this->assertTrue(isset($options['advanced']));
 		$advancedOptions = $options['advanced'];
@@ -33,11 +37,40 @@ class GameFirstInterfaceTest extends TestCase
 		$this->assertEquals("true", $advancedOptions[1]);
 	}
 	public function testOptionsPeekOptions(){
-		$sut = new DwarfGold();
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
 		$options = $sut->getGameOptions();
 		$this->assertTrue(isset($options['peek']));
 		$peekOptions = $options['peek'];
 		$this->assertEquals("false", $peekOptions[0]);
 		$this->assertEquals("true", $peekOptions[1]);
+	}
+	public function testStartGameGameId(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame([]);
+		$this->assertEquals(null, $result->gameId);
+	}
+	public function testStartGamePlayers(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame([]);
+		$this->assertEquals(0, count($result->players));
+	}
+	public function testStartGameGoldenPath2(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Mage', 'Orc'], 'advanced'=>"false", 'peek'=>'false']);
+		$this->assertEquals(2, count($result->players));
+	}
+
+	public function testPublicGameState(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Mage', 'Orc'], 'advanced'=>"false", 'peek'=>'false']);
+		$gameId = $result->gameId;
+		$this->assertTrue($gameId != null);
+		$gameState = $sut->getPublicGameState($gameId);
+		$this->assertTrue($gameState != null);
 	}
 }
