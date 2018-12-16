@@ -78,6 +78,19 @@
 		    	}
 		    	if($error === false){
 		    		$game = new Game($options, $this->persistance);
+		    		for($i = 0; $i < $options['numberOfPlayers']; $i++){
+		    			$game->addPlayer(new Player());
+		    		}
+		    		$players = $game->getPlayers();
+		    		shuffle($options['factions']);
+		    		$index = 0;
+		    		foreach($players as $player){
+		    			$player->setFaction($options['factions'][$index]);
+		    			$index += 1;
+		    		}
+		    		$game->setAdvancedMode($options['advanced'] === 'true');
+		    		$game->start();
+		    		$game->setupAdvancedTokens();
 		    		$id = $this->save(null, $game);
 		    		$result->gameId = $id;
 		    	}
@@ -86,7 +99,15 @@
 	    }
 	    public function getPublicGameState($gameId){
 	    	$game = $this->loadGame($gameId);
-	    	return $game;
+	    	$publicGame = new \stdClass();
+	    	$publicGame->players = [];
+	    	$gamePlayers = $game->getPlayers();
+	    	foreach($gamePlayers as $player){
+	    		$publicPlayer = new \stdClass();
+	    		$publicPlayer->powerTokens = $player->getPowerTokens();
+	    		$publicGame->players[] = $publicPlayer;
+	    	}
+	    	return $publicGame;
 	    }
 	    public function getPrivateGameState($gameId, $playerId){
 

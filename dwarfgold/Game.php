@@ -30,6 +30,10 @@ class Game{
 		$this->palisades = 35;
 	}
 
+	public function getPlayers(){
+		return $this->players;
+	}
+
 	public function getBoard(){
 		return  $this->board;
 	}

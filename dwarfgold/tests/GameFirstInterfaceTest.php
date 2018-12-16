@@ -72,5 +72,61 @@ class GameFirstInterfaceTest extends TestCase
 		$this->assertTrue($gameId != null);
 		$gameState = $sut->getPublicGameState($gameId);
 		$this->assertTrue($gameState != null);
+		$this->assertEquals(2, count($gameState->players));
+	}
+	public function testPublicGameState3(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>3, 'factions'=>['Mage', 'Orc', 'Elf'], 'advanced'=>"false", 'peek'=>'false']);
+		$gameId = $result->gameId;
+		$this->assertTrue($gameId != null);
+		$gameState = $sut->getPublicGameState($gameId);
+		$this->assertTrue($gameState != null);
+		$this->assertEquals(3, count($gameState->players));
+	}
+	public function testPublicGameState4(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>4, 'factions'=>['Mage', 'Orc', 'Elf', 'Goblin'], 'advanced'=>"false", 'peek'=>'false']);
+		$gameId = $result->gameId;
+		$this->assertTrue($gameId != null);
+		$gameState = $sut->getPublicGameState($gameId);
+		$this->assertTrue($gameState != null);
+		$this->assertEquals(4, count($gameState->players));
+	}
+	public function testPublicPowerToken(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Mage', 'Orc'], 'advanced'=>"false", 'peek'=>'false']);
+		$gameId = $result->gameId;
+		$this->assertTrue($gameId != null);
+		$gameState = $sut->getPublicGameState($gameId);
+		$players = $gameState->players;
+		foreach($players as $player){
+			$this->assertEquals(0, $player->powerTokens);
+		}
+	}
+	public function testPublicPowerTokenTwo(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Mage', 'Elf'], 'advanced'=>"true", 'peek'=>'false']);
+		$gameId = $result->gameId;
+		$this->assertTrue($gameId != null);
+		$gameState = $sut->getPublicGameState($gameId);
+		$players = $gameState->players;
+		foreach($players as $player){
+			$this->assertEquals(2, $player->powerTokens);
+		}
+	}
+	public function testPublicPowerTokenOne(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Orc', 'Goblin'], 'advanced'=>"true", 'peek'=>'false']);
+		$gameId = $result->gameId;
+		$gameState = $sut->getPublicGameState($gameId);
+		$players = $gameState->players;
+		foreach($players as $player){
+			$this->assertEquals(1, $player->powerTokens);
+		}
 	}
 }
