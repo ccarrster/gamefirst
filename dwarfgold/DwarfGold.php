@@ -107,10 +107,30 @@
 	    		$publicPlayer->powerTokens = $player->getPowerTokens();
 	    		$publicGame->players[] = $publicPlayer;
 	    	}
+	    	$publicGame->palisades = $game->getPalisadeCount();
+	    	$board = new \stdClass();
+	    	$board->cells = [];
+	    	for($x = 0; $x < 8; $x++){
+	    		$board->cells[$x] = [];
+	    		for($y = 0; $y < 5; $y++){
+	    			$boardCell = $game->getBoard()->getCell($x, $y);
+	    			$cell = new \stdClass();
+	    			$cell->faction = $boardCell->getFaction();
+	    			$cell->hasReinforcement = $boardCell->hasReinforcement();
+	    			$cell->southPalisade = $boardCell->hasPalisade('south');
+	    			$cell->eastPalisade = $boardCell->hasPalisade('east');
+	    			$cell->gold = $boardCell->getGold();
+	    			$cell->arrows = $boardCell->getArrows();
+	    			$board->cells[$x][$y] = $cell;
+	    		}
+	    	}
+	    	$publicGame->board = $board;
 	    	return $publicGame;
 	    }
 	    public function getPrivateGameState($gameId, $playerId){
-
+	    	$game = $this->loadGame($gameId);
+	    	$privateGame = new \stdClass();
+	    	return $privateGame;
 	    }
 	    public function getAvailableOptions($gameId, $playerId){
 

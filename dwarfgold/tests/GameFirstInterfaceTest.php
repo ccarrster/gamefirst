@@ -129,4 +129,48 @@ class GameFirstInterfaceTest extends TestCase
 			$this->assertEquals(1, $player->powerTokens);
 		}
 	}
+	public function testPublicCountPalisades(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Orc', 'Goblin'], 'advanced'=>"true", 'peek'=>'false']);
+		$gameId = $result->gameId;
+		$gameState = $sut->getPublicGameState($gameId);
+		$this->assertEquals(35, $gameState->palisades);
+	}
+	public function testPublicBoard(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Orc', 'Goblin'], 'advanced'=>"true", 'peek'=>'false']);
+		$gameId = $result->gameId;
+		$gameState = $sut->getPublicGameState($gameId);
+		$board = $gameState->board;
+		$this->assertTrue($board != null);
+		$cell = $board->cells[0][0];
+		$this->assertTrue($cell != null);
+	}
+	public function testPublicBoardFaction(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Orc', 'Goblin'], 'advanced'=>"true", 'peek'=>'false']);
+		$gameId = $result->gameId;
+		$gameState = $sut->getPublicGameState($gameId);
+		$board = $gameState->board;
+		$this->assertTrue($board != null);
+		$cell = $board->cells[0][0];
+		$this->assertEquals(null, $cell->faction);
+		$this->assertEquals(false, $cell->hasReinforcement);
+		$this->assertFalse($cell->southPalisade);
+		$this->assertFalse($cell->eastPalisade);
+		$this->assertEquals(0, $cell->gold);
+		$this->assertEquals(0, $cell->arrows);
+	}
+	public function testPrivateState(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Orc', 'Goblin'], 'advanced'=>"true", 'peek'=>'false']);
+		$gameId = $result->gameId;
+		$gameState = $sut->getPrivateGameState($gameId, 'Orc');
+		$this->assertTrue($gameState != null);
+		
+	}
 }
