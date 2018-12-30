@@ -130,6 +130,8 @@
 	    public function getPrivateGameState($gameId, $playerId){
 	    	$game = $this->loadGame($gameId);
 	    	$privateGame = new \stdClass();
+	    	$player = new \stdClass();
+	    	$privateGame->player = $player;
 	    	return $privateGame;
 	    }
 	    public function getAvailableOptions($gameId, $playerId){

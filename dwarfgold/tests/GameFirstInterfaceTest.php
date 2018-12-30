@@ -171,6 +171,6 @@ class GameFirstInterfaceTest extends TestCase
 		$gameId = $result->gameId;
 		$gameState = $sut->getPrivateGameState($gameId, 'Orc');
 		$this->assertTrue($gameState != null);
-		
+		$this->assertTrue($gameState->player != null);
 	}
 }
