@@ -90,6 +90,7 @@
 		    		}
 		    		$game->setAdvancedMode($options['advanced'] === 'true');
 		    		$game->start();
+		    		$game->setupWarriors();
 		    		$game->setupAdvancedTokens();
 		    		$id = $this->save(null, $game);
 		    		$result->gameId = $id;
@@ -131,6 +132,12 @@
 	    	$game = $this->loadGame($gameId);
 	    	$privateGame = new \stdClass();
 	    	$player = new \stdClass();
+	    	$players = $game->getPlayers();
+	    	foreach($players as $gamePlayer){
+	    		if($gamePlayer->faction === $playerId){
+	    			$player->warriors = $gamePlayer->warriors;		
+	    		}
+	    	}
 	    	$privateGame->player = $player;
 	    	return $privateGame;
 	    }

@@ -172,5 +172,11 @@ class GameFirstInterfaceTest extends TestCase
 		$gameState = $sut->getPrivateGameState($gameId, 'Orc');
 		$this->assertTrue($gameState != null);
 		$this->assertTrue($gameState->player != null);
+		$this->assertTrue(count($gameState->player->warriors) === 5);
+		$this->assertEquals(11, $gameState->player->warriors[0]);
+		$this->assertEquals(2, $gameState->player->warriors[1]);
+		$this->assertEquals(1, $gameState->player->warriors[2]);
+		$this->assertEquals(1, $gameState->player->warriors[3]);
+		$this->assertEquals(1, $gameState->player->warriors[4]);
 	}
 }
