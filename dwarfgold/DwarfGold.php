@@ -135,7 +135,8 @@
 	    	$players = $game->getPlayers();
 	    	foreach($players as $gamePlayer){
 	    		if($gamePlayer->faction === $playerId){
-	    			$player->warriors = $gamePlayer->warriors;		
+	    			$player->warriors = $gamePlayer->warriors;
+	    			$player->reinforcements = $gamePlayer->getReinforcments();
 	    		}
 	    	}
 	    	$privateGame->player = $player;

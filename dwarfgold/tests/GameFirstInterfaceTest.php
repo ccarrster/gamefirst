@@ -178,5 +178,6 @@ class GameFirstInterfaceTest extends TestCase
 		$this->assertEquals(1, $gameState->player->warriors[2]);
 		$this->assertEquals(1, $gameState->player->warriors[3]);
 		$this->assertEquals(1, $gameState->player->warriors[4]);
+		$this->assertEquals(1, $gameState->player->reinforcements);
 	}
 }
