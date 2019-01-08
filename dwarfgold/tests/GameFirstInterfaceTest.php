@@ -180,4 +180,32 @@ class GameFirstInterfaceTest extends TestCase
 		$this->assertEquals(1, $gameState->player->warriors[4]);
 		$this->assertEquals(1, $gameState->player->reinforcements);
 	}
+	public function testOptions(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Orc', 'Goblin'], 'advanced'=>"true", 'peek'=>'true']);
+		$gameId = $result->gameId;
+		$options = $sut->getAvailableOptions($gameId, 'Orc');
+		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
+		$this->assertTrue((6 == count($options) &&  0 == count($goblinOptions)) || (6 == count($goblinOptions) && 0 == count($options)));
+	}
+
+	public function testNonAdvancedOptions(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Orc', 'Goblin'], 'advanced'=>"false", 'peek'=>'true']);
+		$gameId = $result->gameId;
+		$options = $sut->getAvailableOptions($gameId, 'Orc');
+		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
+		$this->assertTrue((4 == count($options) &&  0 == count($goblinOptions)) || (4 == count($goblinOptions) && 0 == count($options)));
+	}
+	public function testNonAdvancedNonPeekOptions(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Orc', 'Goblin'], 'advanced'=>"false", 'peek'=>'false']);
+		$gameId = $result->gameId;
+		$options = $sut->getAvailableOptions($gameId, 'Orc');
+		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
+		$this->assertTrue((3 == count($options) &&  0 == count($goblinOptions)) || (3 == count($goblinOptions) && 0 == count($options)));
+	}
 }

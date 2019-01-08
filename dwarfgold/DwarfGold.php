@@ -89,6 +89,7 @@
 		    			$index += 1;
 		    		}
 		    		$game->setAdvancedMode($options['advanced'] === 'true');
+		    		$game->setCanPeek($options['peek'] === 'true');
 		    		$game->start();
 		    		$game->setupWarriors();
 		    		$game->setupAdvancedTokens();
@@ -143,7 +144,22 @@
 	    	return $privateGame;
 	    }
 	    public function getAvailableOptions($gameId, $playerId){
-
+	    	$options = [];
+	    	$game = $this->loadGame($gameId);
+	    	$currentPlayer = $game->getCurrentPlayer();
+	    	if($currentPlayer->getFaction() === $playerId){
+	    		if($game->getAdvancedMode() == true){
+	    			$options[] = 'Power';
+	    			$options[] = 'Reinforce';
+	    		}
+	    		if($game->getCanPeek() == true){
+	    			$options[] = 'Peek';
+	    		}
+	    		$options[] = 'Palisade';
+	    		$options[] = 'Warrior';
+	    		$options[] = 'Pass';
+	    	}
+	    	return $options;
 	    }
 	    public function chooseOption($gameId, $playerId, $options){
 
