@@ -149,15 +149,15 @@
 	    	$currentPlayer = $game->getCurrentPlayer();
 	    	if($currentPlayer->getFaction() === $playerId){
 	    		if($game->getAdvancedMode() == true){
-	    			$options[] = 'Power';
-	    			$options[] = 'Reinforce';
+	    			$options['Power'] = $game->getValidPowerLocations($playerId);
+	    			$options['Reinforce'] = $game->getValidReinforementLocations($playerId);
 	    		}
 	    		if($game->getCanPeek() == true){
-	    			$options[] = 'Peek';
+	    			$options['Peek'] = $game->getValidPeekLocations($playerId);
 	    		}
-	    		$options[] = 'Palisade';
-	    		$options[] = 'Warrior';
-	    		$options[] = 'Pass';
+	    		$options['Palisade'] = $game->getValidPalisadeLocations($playerId);
+	    		$options['Warrior'] = $game->getValidWarriorLocations($playerId);
+	    		$options['Pass'] = ['pass'];
 	    	}
 	    	return $options;
 	    }

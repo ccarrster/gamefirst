@@ -388,5 +388,20 @@ class Game{
 	}
 	public function getReinforcmentTargets($faction){
 		return $this->board->getReinforcmentTargets($faction);
-	}	
+	}
+	public function getValidPowerLocations($player){
+
+	}
+	public function getValidReinforementLocations($player){
+
+	}
+	public function getValidPeekLocations($player){
+
+	}
+	public function getValidPalisadeLocations($player){
+
+	}
+	public function getValidWarriorLocations($player){
+		
+	}
 }

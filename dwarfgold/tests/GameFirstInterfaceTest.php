@@ -208,4 +208,7 @@ class GameFirstInterfaceTest extends TestCase
 		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
 		$this->assertTrue((3 == count($options) &&  0 == count($goblinOptions)) || (3 == count($goblinOptions) && 0 == count($options)));
 	}
+	public function chooseOption(){
+		
+	}
 }
