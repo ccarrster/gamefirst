@@ -345,6 +345,18 @@ class Game{
 		return $enemyWarriors;
 	}
 
+	public function getFactionWarriors($inFaction){
+		$warriors = $this->board->getAllWarriors();
+		$factionWarriors = [];
+		foreach($warriors as $warrior){
+			$warriorFaction = $warrior->faction;
+			if($warriorFaction === $inFaction){
+				$factionWarriors[] = $warrior;
+			}
+		}
+		return $factionWarriors;
+	}
+
 	public function getFreeSquares(){
 		$freeSquares = $this->board->getFreeSquares();
 		return $freeSquares;
@@ -389,19 +401,28 @@ class Game{
 	public function getReinforcmentTargets($faction){
 		return $this->board->getReinforcmentTargets($faction);
 	}
-	public function getValidPowerLocations($player){
 
+	public function getValidPowerLocations($player){
+		if($player === DwarfGoldConfig::ORC){
+			return $this->getValidPalisadeLocations($player);
+		} elseif($player === DwarfGoldConfig::GOBLIN){
+			return $this->getValidWarriorLocations($player);
+		} elseif($player === DwarfGoldConfig::ELF){
+			return $this->getArrowTargets($player);
+		} elseif($player === DwarfGoldConfig::MAGE){
+			return $this->getEnemyTargets($player);
+		}
 	}
 	public function getValidReinforementLocations($player){
-
+		return $this->getReinforcmentTargets($player);
 	}
 	public function getValidPeekLocations($player){
-
+		return $this->getFactionWarriors($player);
 	}
 	public function getValidPalisadeLocations($player){
-
+		return $this->board->getValidPalisadeLocations();
 	}
 	public function getValidWarriorLocations($player){
-		
+		return $this->getFreeSquares();
 	}
 }

@@ -48,6 +48,7 @@ class Board{
 		}
 	}
 
+	//TODO maybe we do not need faction
 	public function placePalisade($faction, $side, $x, $y){
 		$cell = $this->cells[$x][$y];
 		$result = $cell->placePalisade($side);
@@ -60,6 +61,34 @@ class Board{
 			$cell->removePalisade($side);
 			return false;
 		}
+	}
+
+	public function getValidPalisadeLocations(){
+		$locations = [];
+		for($x = 0; $x < 8; $x++){
+			for($y = 0; $y < 5; $y++){
+				$side = 'east';
+				while($side !== null){
+					$result = $this->cells[$x][$y]->placePalisade($side);
+					if($result === true){
+						if($this->teritoriesAreValid()){
+							$option = new \stdClass();
+							$option->x = $x;
+							$option->y = $y;
+							$option->side = $side;
+							$locations[] = $option;
+						}
+						$this->cells[$x][$y]->removePalisade($side);
+					}
+					if($side === 'east'){
+						$side = 'south';
+					} elseif($side === 'south'){
+						$side = null;
+					}
+				}
+			}
+		}
+		return $locations;
 	}
 
 	public function teritoriesAreValid(){
