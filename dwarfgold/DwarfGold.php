@@ -162,7 +162,19 @@
 	    	return $options;
 	    }
 	    public function chooseOption($gameId, $playerId, $options){
-
+	    	$game = $this->loadGame($gameId);
+	    	$currentPlayer = $game->getCurrentPlayer();
+	    	if($currentPlayer->getFaction() === $playerId){
+	    		if($options->type === 'Warrior'){
+	    			$result = $game->placeWarrior($playerId, (int)$options->strength, $options->x, $options->y);
+	    			if($result === true){
+	    				$this->save($gameId, $game);
+	    			}
+	    			return $result;
+	    		}
+	    	} else {
+	    		return false;
+	    	}
 	    }
 
 	    /*

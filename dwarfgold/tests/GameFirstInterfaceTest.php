@@ -208,7 +208,58 @@ class GameFirstInterfaceTest extends TestCase
 		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
 		$this->assertTrue((3 == count($options) &&  0 == count($goblinOptions)) || (3 == count($goblinOptions) && 0 == count($options)));
 	}
-	public function chooseOption(){
-		
+	public function testPeekZero(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Orc', 'Goblin'], 'advanced'=>"false", 'peek'=>'true']);
+		$gameId = $result->gameId;
+		$options = $sut->getAvailableOptions($gameId, 'Orc');
+		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
+		if(count($options) !== 0){
+			$currentOptions = $options;
+		} else {
+			$currentOptions = $goblinOptions;
+		}
+		$this->assertTrue(isset($currentOptions['Peek']));
+		$this->assertEquals(0, count($currentOptions['Peek']));
+	}
+	public function testWarrior(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Orc', 'Goblin'], 'advanced'=>"false", 'peek'=>'true']);
+		$gameId = $result->gameId;
+		$options = $sut->getAvailableOptions($gameId, 'Orc');
+		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
+		$player = '';
+		if(count($options) !== 0){
+			$player = 'Orc';
+			$currentOptions = $options;
+		} else {
+			$player = 'Goblin';
+			$currentOptions = $goblinOptions;
+		}
+		$this->assertTrue(isset($currentOptions['Warrior']));
+		$this->assertTrue(count($currentOptions['Warrior']) > 0);
+		$option = new stdClass();
+		$option->type = 'Warrior';
+		$option->x = $currentOptions['Warrior'][0]->x;
+		$option->y = $currentOptions['Warrior'][0]->y;
+		$option->strength = '1';
+		$result = $sut->chooseOption($gameId, $player, $option);
+		$this->assertTrue($result);
+		$option = new stdClass();
+		$option->type = 'Pass';
+		$sut->chooseOption($gameId, $player, $option);
+		$options = $sut->getAvailableOptions($gameId, 'Orc');
+		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
+		$player = '';
+		if(count($options) !== 0){
+			$player = 'Orc';
+			$currentOptions = $options;
+		} else {
+			$player = 'Goblin';
+			$currentOptions = $goblinOptions;
+		}
+		$this->assertEquals(1, count($currentOptions['Peek']));
 	}
 }
