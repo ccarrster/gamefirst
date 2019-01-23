@@ -171,6 +171,17 @@
 	    				$this->save($gameId, $game);
 	    			}
 	    			return $result;
+	    		} elseif($options->type === 'Palisade'){
+	    			foreach($options->locations as $location){
+	    				$result = $game->placePalisade($playerId, $location->side, $location->x, $location->y);
+	    				if($result === false){
+	    					//TODO if one placed and another will not then remove last one
+	    					//TODO zero is wrong, 1 is ok, 2 is ok, 3 or more is wrong
+	    					return false;
+	    				}
+	    			}
+	    			$this->save($gameId, $game);
+	    			return true;
 	    		}
 	    	} else {
 	    		return false;

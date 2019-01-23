@@ -262,4 +262,49 @@ class GameFirstInterfaceTest extends TestCase
 		}
 		$this->assertEquals(1, count($currentOptions['Peek']));
 	}
+	public function testPalisade(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Orc', 'Goblin'], 'advanced'=>"false", 'peek'=>'true']);
+		$gameId = $result->gameId;
+		$options = $sut->getAvailableOptions($gameId, 'Orc');
+		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
+		$player = '';
+		if(count($options) !== 0){
+			$player = 'Orc';
+			$currentOptions = $options;
+		} else {
+			$player = 'Goblin';
+			$currentOptions = $goblinOptions;
+		}
+		$this->assertTrue(isset($currentOptions['Palisade']));
+		$this->assertTrue(count($currentOptions['Palisade']) > 0);
+		$this->assertFalse(!($currentOptions['Palisade'][0]->x === 0 && $currentOptions['Palisade'][0]->y === 0));
+		$option = new stdClass();
+		$option->type = 'Palisade';
+		$option->locations = [];
+		$location = new stdClass();
+		$location->x = $currentOptions['Palisade'][0]->x;
+		$location->y = $currentOptions['Palisade'][0]->y;
+		$location->side = 'east';
+		$option->locations[] = $location;
+		
+		$result = $sut->chooseOption($gameId, $player, $option);
+		$this->assertTrue($result);
+		$option = new stdClass();
+		$option->type = 'Pass';
+		$sut->chooseOption($gameId, $player, $option);
+		$options = $sut->getAvailableOptions($gameId, 'Orc');
+		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
+		$player = '';
+		if(count($options) !== 0){
+			$player = 'Orc';
+			$currentOptions = $options;
+		} else {
+			$player = 'Goblin';
+			$currentOptions = $goblinOptions;
+		}
+		$this->assertTrue(!($currentOptions['Palisade'][0]->x === 0 && $currentOptions['Palisade'][0]->y === 0));
+
+	}
 }
