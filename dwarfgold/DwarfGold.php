@@ -172,6 +172,10 @@
 	    			}
 	    			return $result;
 	    		} elseif($options->type === 'Palisade'){
+	    			//1 or 2 locations valid
+	    			if(count($options->locations) < 1 || count($options->locations) > 2){
+	    				return false;
+	    			}
 	    			foreach($options->locations as $location){
 	    				$result = $game->placePalisade($playerId, $location->side, $location->x, $location->y);
 	    				if($result === false){
@@ -182,6 +186,17 @@
 	    			}
 	    			$this->save($gameId, $game);
 	    			return true;
+	    		} elseif($options->type === 'Pass'){
+	    			$currentPlayer->setPass(true);
+	    			$this->save($gameId, $game);
+	    			return true;
+	    		} elseif($options->type === 'Peek'){
+	    			if($game->getCanPeek() == true){
+	    				$cell = $game->getBoard()->getCell($options->x, $options->y);
+	    				return $cell->getValue();
+	    			} else {
+	    				return false;
+	    			}
 	    		}
 	    	} else {
 	    		return false;

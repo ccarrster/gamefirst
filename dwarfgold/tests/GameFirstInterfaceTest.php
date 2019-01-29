@@ -305,6 +305,280 @@ class GameFirstInterfaceTest extends TestCase
 			$currentOptions = $goblinOptions;
 		}
 		$this->assertTrue(!($currentOptions['Palisade'][0]->x === 0 && $currentOptions['Palisade'][0]->y === 0));
-
+	}
+	public function testPalisadeZero(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Orc', 'Goblin'], 'advanced'=>"false", 'peek'=>'true']);
+		$gameId = $result->gameId;
+		$options = $sut->getAvailableOptions($gameId, 'Orc');
+		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
+		$player = '';
+		if(count($options) !== 0){
+			$player = 'Orc';
+			$currentOptions = $options;
+		} else {
+			$player = 'Goblin';
+			$currentOptions = $goblinOptions;
+		}
+		$this->assertTrue(isset($currentOptions['Palisade']));
+		$this->assertTrue(count($currentOptions['Palisade']) > 0);
+		$this->assertFalse(!($currentOptions['Palisade'][0]->x === 0 && $currentOptions['Palisade'][0]->y === 0));
+		$option = new stdClass();
+		$option->type = 'Palisade';
+		$option->locations = [];
+		
+		
+		$result = $sut->chooseOption($gameId, $player, $option);
+		$this->assertFalse($result);
+	}
+	public function testThree(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Orc', 'Goblin'], 'advanced'=>"false", 'peek'=>'true']);
+		$gameId = $result->gameId;
+		$options = $sut->getAvailableOptions($gameId, 'Orc');
+		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
+		$player = '';
+		if(count($options) !== 0){
+			$player = 'Orc';
+			$currentOptions = $options;
+		} else {
+			$player = 'Goblin';
+			$currentOptions = $goblinOptions;
+		}
+		$this->assertTrue(isset($currentOptions['Palisade']));
+		$this->assertTrue(count($currentOptions['Palisade']) > 0);
+		$this->assertFalse(!($currentOptions['Palisade'][0]->x === 0 && $currentOptions['Palisade'][0]->y === 0));
+		$option = new stdClass();
+		$option->type = 'Palisade';
+		$option->locations = [];
+		$location = new stdClass();
+		$location->x = 0;
+		$location->y = 0;
+		$location->side = 'east';
+		$option->locations[] = $location;
+		$location = new stdClass();
+		$location->x = 1;
+		$location->y = 0;
+		$location->side = 'east';
+		$option->locations[] = $location;
+		$location = new stdClass();
+		$location->x = 2;
+		$location->y = 0;
+		$location->side = 'east';
+		$option->locations[] = $location;
+		
+		$result = $sut->chooseOption($gameId, $player, $option);
+		$this->assertFalse($result);
+	}
+	public function testPalisadeTwo(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Orc', 'Goblin'], 'advanced'=>"false", 'peek'=>'true']);
+		$gameId = $result->gameId;
+		$options = $sut->getAvailableOptions($gameId, 'Orc');
+		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
+		$player = '';
+		if(count($options) !== 0){
+			$player = 'Orc';
+			$currentOptions = $options;
+		} else {
+			$player = 'Goblin';
+			$currentOptions = $goblinOptions;
+		}
+		$this->assertTrue(isset($currentOptions['Palisade']));
+		$this->assertTrue(count($currentOptions['Palisade']) > 0);
+		$this->assertFalse(!($currentOptions['Palisade'][0]->x === 0 && $currentOptions['Palisade'][0]->y === 0));
+		$option = new stdClass();
+		$option->type = 'Palisade';
+		$option->locations = [];
+		$location = new stdClass();
+		$location->x = $currentOptions['Palisade'][0]->x;
+		$location->y = $currentOptions['Palisade'][0]->y;
+		$location->side = 'east';
+		$option->locations[] = $location;
+		$location = new stdClass();
+		$location->x = 1;
+		$location->y = 0;
+		$location->side = 'east';
+		$option->locations[] = $location;
+		
+		$result = $sut->chooseOption($gameId, $player, $option);
+		$this->assertTrue($result);
+		$option = new stdClass();
+		$option->type = 'Pass';
+		$sut->chooseOption($gameId, $player, $option);
+		$options = $sut->getAvailableOptions($gameId, 'Orc');
+		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
+		$player = '';
+		if(count($options) !== 0){
+			$player = 'Orc';
+			$currentOptions = $options;
+		} else {
+			$player = 'Goblin';
+			$currentOptions = $goblinOptions;
+		}
+		$this->assertTrue(!($currentOptions['Palisade'][0]->x === 0 && $currentOptions['Palisade'][0]->y === 0));
+	}
+	public function testPalisadeTwoSame(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Orc', 'Goblin'], 'advanced'=>"false", 'peek'=>'true']);
+		$gameId = $result->gameId;
+		$options = $sut->getAvailableOptions($gameId, 'Orc');
+		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
+		$player = '';
+		if(count($options) !== 0){
+			$player = 'Orc';
+			$currentOptions = $options;
+		} else {
+			$player = 'Goblin';
+			$currentOptions = $goblinOptions;
+		}
+		$this->assertTrue(isset($currentOptions['Palisade']));
+		$this->assertTrue(count($currentOptions['Palisade']) > 0);
+		$this->assertFalse(!($currentOptions['Palisade'][0]->x === 0 && $currentOptions['Palisade'][0]->y === 0));
+		$option = new stdClass();
+		$option->type = 'Palisade';
+		$option->locations = [];
+		$location = new stdClass();
+		$location->x = 0;
+		$location->y = 0;
+		$location->side = 'east';
+		$option->locations[] = $location;
+		$location = new stdClass();
+		$location->x = 0;
+		$location->y = 0;
+		$location->side = 'east';
+		$option->locations[] = $location;
+		
+		$result = $sut->chooseOption($gameId, $player, $option);
+		$this->assertFalse($result);
+		$option = new stdClass();
+		$option->type = 'Pass';
+		$sut->chooseOption($gameId, $player, $option);
+		$options = $sut->getAvailableOptions($gameId, 'Orc');
+		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
+		$player = '';
+		if(count($options) !== 0){
+			$player = 'Orc';
+			$currentOptions = $options;
+		} else {
+			$player = 'Goblin';
+			$currentOptions = $goblinOptions;
+		}
+		$this->assertTrue($currentOptions['Palisade'][0]->x === 0 && $currentOptions['Palisade'][0]->y === 0);
+	}
+	public function testPass(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Orc', 'Goblin'], 'advanced'=>"false", 'peek'=>'true']);
+		$gameId = $result->gameId;
+		$options = $sut->getAvailableOptions($gameId, 'Orc');
+		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
+		$player = '';
+		if(count($options) !== 0){
+			$player = 'Orc';
+			$currentOptions = $options;
+		} else {
+			$player = 'Goblin';
+			$currentOptions = $goblinOptions;
+		}
+		$this->assertTrue(isset($currentOptions['Pass']));
+		$option = new stdClass();
+		$option->type = 'Pass';
+		$result = $sut->chooseOption($gameId, $player, $option);
+		$this->assertTrue($result);
+	}
+	public function testWarriorPeek(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Orc', 'Goblin'], 'advanced'=>"false", 'peek'=>'true']);
+		$gameId = $result->gameId;
+		$options = $sut->getAvailableOptions($gameId, 'Orc');
+		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
+		$player = '';
+		if(count($options) !== 0){
+			$player = 'Orc';
+			$currentOptions = $options;
+		} else {
+			$player = 'Goblin';
+			$currentOptions = $goblinOptions;
+		}
+		$this->assertTrue(isset($currentOptions['Warrior']));
+		$this->assertTrue(count($currentOptions['Warrior']) > 0);
+		$option = new stdClass();
+		$option->type = 'Warrior';
+		$option->x = $currentOptions['Warrior'][0]->x;
+		$option->y = $currentOptions['Warrior'][0]->y;
+		$option->strength = '1';
+		$result = $sut->chooseOption($gameId, $player, $option);
+		$this->assertTrue($result);
+		$option = new stdClass();
+		$option->type = 'Pass';
+		$sut->chooseOption($gameId, $player, $option);
+		$options = $sut->getAvailableOptions($gameId, 'Orc');
+		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
+		$player = '';
+		if(count($options) !== 0){
+			$player = 'Orc';
+			$currentOptions = $options;
+		} else {
+			$player = 'Goblin';
+			$currentOptions = $goblinOptions;
+		}
+		$this->assertEquals(1, count($currentOptions['Peek']));
+		$option = new stdClass();
+		$option->type = 'Peek';
+		$option->x = 0;
+		$option->y = 0;
+		$result = $sut->chooseOption($gameId, $player, $option);
+		$this->assertEquals(1, $result);
+	}
+	public function testWarriorPeekValue2(){
+		$persistance = new FilePersistance();
+		$sut = new DwarfGold($persistance);
+		$result = $sut->startGame(['numberOfPlayers'=>2, 'factions'=>['Orc', 'Goblin'], 'advanced'=>"false", 'peek'=>'true']);
+		$gameId = $result->gameId;
+		$options = $sut->getAvailableOptions($gameId, 'Orc');
+		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
+		$player = '';
+		if(count($options) !== 0){
+			$player = 'Orc';
+			$currentOptions = $options;
+		} else {
+			$player = 'Goblin';
+			$currentOptions = $goblinOptions;
+		}
+		$this->assertTrue(isset($currentOptions['Warrior']));
+		$this->assertTrue(count($currentOptions['Warrior']) > 0);
+		$option = new stdClass();
+		$option->type = 'Warrior';
+		$option->x = $currentOptions['Warrior'][0]->x;
+		$option->y = $currentOptions['Warrior'][0]->y;
+		$option->strength = '2';
+		$result = $sut->chooseOption($gameId, $player, $option);
+		$this->assertTrue($result);
+		$option = new stdClass();
+		$option->type = 'Pass';
+		$sut->chooseOption($gameId, $player, $option);
+		$options = $sut->getAvailableOptions($gameId, 'Orc');
+		$goblinOptions = $sut->getAvailableOptions($gameId, 'Goblin');
+		$player = '';
+		if(count($options) !== 0){
+			$player = 'Orc';
+			$currentOptions = $options;
+		} else {
+			$player = 'Goblin';
+			$currentOptions = $goblinOptions;
+		}
+		$this->assertEquals(1, count($currentOptions['Peek']));
+		$option = new stdClass();
+		$option->type = 'Peek';
+		$option->x = 0;
+		$option->y = 0;
+		$result = $sut->chooseOption($gameId, $player, $option);
+		$this->assertEquals(2, $result);
 	}
 }
